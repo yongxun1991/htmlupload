@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Native Ad – /94348418/Test_PauseAd_HTML5TV</title>
+
+  <style>
+    /* fluid 原生廣告容器建議設定：寬度由版面決定，高度交給 GPT 動態調整 */
+    .gpt-native-container {
+      width: 100%;
+      min-height: 1px;      /* 避免版面跳動的保底高度 */
+      overflow: hidden;     /* 原生通常會自適應高度，隱藏溢出避免抖動 */
+    }
+  </style>
+
+  <!-- GPT -->
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+  <script>
+    window.googletag = window.googletag || {cmd: []};
+
+    googletag.cmd.push(function () {
+      // 建議：啟用單請求模式、空版位折疊、Lazy Load
+      googletag.pubads().enableSingleRequest();
+      googletag.pubads().collapseEmptyDivs(true);
+
+      // 如需符合隱私/同意，可在取得 CMP 結果後切換 npa，再 enableServices()
+      // 例：googletag.pubads().setRequestNonPersonalizedAds(1); // 只在需要時打開
+
+      // 建議 Lazy Load（依你的頁面長度調整）
+      if (googletag.pubads().enableLazyLoad) {
+        googletag.pubads().enableLazyLoad({
+          fetchMarginPercent: 200,   // 提前抓取
+          renderMarginPercent: 100,  // 提前渲染
+          mobileScaling: 2.0
+        });
+      }
+
+      // === 定義原生廣告 slot（Google-rendered，使用 fluid 尺寸） ===
+      var nativeSlot = googletag.defineSlot(
+        '/94348418/Test_PauseAd_HTML5TV',   // 你的 ad unit path
+        ['fluid'],                          // 原生建議使用 fluid
+        'gpt-native-pausead'                // 容器 ID
+      )
+      .addService(googletag.pubads())
+      // 可選：加上一些 slot-level targeting，方便報表或投放條件
+      .setTargeting('pos', 'pause')         // 範例：位置
+      .setTargeting('format', 'native');    // 範例：型態
+
+      // （可選）除錯事件：檢查是否為原生、回傳的尺寸/創意ID等
+      googletag.pubads().addEventListener('slotRenderEnded', function (event) {
+        if (event.slot === nativeSlot) {
+          console.log('[GPT] Native slot rendered:', {
+            isEmpty: event.isEmpty,
+            size: event.size,
+            creativeId: event.creativeId,
+            lineItemId: event.lineItemId
+          });
+        }
+      });
+
+      googletag.enableServices();
+
+      // 立即顯示（若採 Lazy Load 且在視窗內會自動渲染）
+      googletag.display('gpt-native-pausead');
+    });
+  </script>
+</head>
+<body>
+  <!-- 你的頁面內容 -->
+
+  <!-- 原生廣告容器：fluid 尺寸 -->
+  <div id="gpt-native-pausead" class="gpt-native-container"
+       aria-label="Pause Ad Native Slot"></div>
+
+  <!-- 你的頁面內容 -->
+</body>
+</html>
