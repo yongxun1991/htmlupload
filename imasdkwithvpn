@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Player + IMA SDK</title>
+  <style>
+    #videoContainer {
+      position: relative;
+      width: 640px;
+      height: 360px;
+      background: #000;
+    }
+    #contentElement {
+      width: 100%;
+      height: 100%;
+    }
+    #adContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* will be handled by IMA */
+    }
+    #controls {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="videoContainer">
+  <video id="contentElement" controls preload="auto">
+    <source src="https://storage.googleapis.com/gvabox/media/samples/stock.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div id="adContainer"></div>
+</div>
+
+<div id="controls">
+  <button id="playButton">Play</button>
+</div>
+
+<div>
+  <label for="vastTagInput">VAST Tag URL:</label>
+  <input type="text" id="vastTagInput" placeholder="Enter your VAST tag URL here" size="80">
+</div>
+
+<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+<script>
+  let videoContent;
+  let adContainer;
+  let adDisplayContainer;
+  let adsLoader;
+  let adsManager;
+  let isAdPlaying = false;
+  let isContentFinished = false;
+
+  function initializePlayer() {
+    videoContent = document.getElementById('contentElement');
+    adContainer = document.getElementById('adContainer');
+    document.getElementById('playButton').addEventListener('click', playAds);
+    setUpIMA();
+  }
+
+  function setUpIMA() {
+    adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, videoContent);
+    adsLoader = new google.ima.AdsLoader(adDisplayContainer);
+    adsLoader.addEventListener(
+      google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+      onAdsManagerLoaded, false);
+    adsLoader.addEventListener(
+      google.ima.AdErrorEvent.Type.AD_ERROR,
+      onAdError, false);
+    
+    videoContent.onended = () => {
+      if (!isAdPlaying) {
+        isContentFinished = true;
+        adsLoader.contentComplete();
+      }
+    };
+  }
+
+  function playAds() {
+    // user interaction triggered
+    adDisplayContainer.initialize();
+    const vastUrl = document.getElementById('vastTagInput').value;
+    if (!vastUrl) {
+      console.warn("No VAST tag URL provided. Falling back to content only.");
+      videoContent.play();
+      return;
+    }
+    const adsRequest = new google.ima.AdsRequest();
+    adsRequest.adTagUrl = vastUrl;
+    adsRequest.linearAdSlotWidth = videoContent.clientWidth;
+    adsRequest.linearAdSlotHeight = videoContent.clientHeight;
+    adsRequest.nonLinearAdSlotWidth = videoContent.clientWidth;
+    adsRequest.nonLinearAdSlotHeight = videoContent.clientHeight / 3;
+    adsLoader.requestAds(adsRequest);
+  }
+
+  function onAdsManagerLoaded(adsManagerLoadedEvent) {
+    adsManager = adsManagerLoadedEvent.getAdsManager(
+      videoContent, new google.ima.AdsRenderingSettings());
+    
+    adsManager.addEventListener(
+      google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
+      () => { isAdPlaying = true; videoContent.pause(); });
+    adsManager.addEventListener(
+      google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
+      () => { isAdPlaying = false; if (!isContentFinished) videoContent.play(); });
+    adsManager.addEventListener(
+      google.ima.AdErrorEvent.Type.AD_ERROR,
+      onAdError);
+
+    try {
+      adsManager.init(videoContent.clientWidth, videoContent.clientHeight, google.ima.ViewMode.NORMAL);
+      adsManager.start();
+    } catch (adError) {
+      console.error("AdsManager init/start error:", adError);
+      videoContent.play();
+    }
+  }
+
+  function onAdError(adErrorEvent) {
+    console.error("Ad error:", adErrorEvent.getError());
+    if (adsManager) {
+      adsManager.destroy();
+    }
+    videoContent.play();
+  }
+
+  // =========== Proxy / IP manipulation stub ==============
+  // Note: This is purely placeholder. Browser JS cannot change public IP.
+  function configureProxy(options) {
+    // options might look like: { proxyHost: “…”, proxyPort: 8080, geo: "US" }
+    console.warn("configureProxy called. But this function is just a stub in browser context.");
+    // In real implementation you would configure your server or proxy layer.
+  }
+
+  window.addEventListener('load', initializePlayer);
+</script>
+
+</body>
+</html>
