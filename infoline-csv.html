@@ -56,8 +56,7 @@
             margin-top: 5px;
         }
         button {
-            display: block;
-            width: 100%;
+            display: inline-block;
             margin-top: 20px;
             padding: 10px;
             background: #007bff;
@@ -82,6 +81,7 @@
     </style>
 </head>
 <body>
+    <button type="button" onclick="location.reload()">Clean Record</button>
     <h1>Infoline CSV Converter</h1>
     <form id="converterForm">
         <label for="advertiser">Advertiser:</label>
@@ -241,7 +241,7 @@
         <div id="fileGroup" style="display: none;">
             <label for="episodeFile">Upload Episode File (.xlsx):</label>
             <input type="file" id="episodeFile" accept=".xlsx">
-            <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="sample_episode_ids.xlsx">Download Sample File</a>
+            <a href="http://yongxun1991.github.io/htmlupload/sample.xlsx" download="sample_episode_ids.xlsx">Download Sample File</a>
         </div>
 
         <label>Country Selection (Multiple):</label>
@@ -252,22 +252,22 @@
             <label><input type="checkbox" name="countries" value="1694008|ph"> Philippines (PH)</label>
             <label><input type="checkbox" name="countries" value="1643084|id"> Indonesia (ID)</label>
             <label><input type="checkbox" name="countries" value="1733045|my"> Malaysia (MY)</label>
-            <label><input type="checkbox" name="countries" value="286963|om"> Oman (OM)</label>
-            <label><input type="checkbox" name="countries" value="285570|kw"> Kuwait (KW)</label>
-            <label><input type="checkbox" name="countries" value="290291|bh"> Bahrain (BH)</label>
-            <label><input type="checkbox" name="countries" value="102358|sa"> Saudi Arabia (SA)</label>
-            <label><input type="checkbox" name="countries" value="289688|qa"> Qatar (QA)</label>
-            <label><input type="checkbox" name="countries" value="69543|ye"> Yemen (YE)</label>
-            <label><input type="checkbox" name="countries" value="290557|ae"> United Arab Emirates (AE)</label>
-            <label><input type="checkbox" name="countries" value="357994|eg"> Egypt (EG)</label>
-            <label><input type="checkbox" name="countries" value="2542007|ma"> Morocco (MA)</label>
-            <label><input type="checkbox" name="countries" value="366755|sd"> Sudan (SD)</label>
-            <label><input type="checkbox" name="countries" value="2464461|tn"> Tunisia (TN)</label>
-            <label><input type="checkbox" name="countries" value="2589581|dz"> Algeria (DZ)</label>
-            <label><input type="checkbox" name="countries" value="99237|iq"> Iraq (IQ)</label>
-            <label><input type="checkbox" name="countries" value="272103|lb"> Lebanon (LB)</label>
-            <label><input type="checkbox" name="countries" value="6254930|ps"> Palestine (PS)</label>
-            <label><input type="checkbox" name="countries" value="248816|jo"> Jordan (JO)</label>
+            <label><input type="checkbox" name="countries" value="286963|om"> Oman (OM) - GCC</label>
+            <label><input type="checkbox" name="countries" value="285570|kw"> Kuwait (KW) - GCC</label>
+            <label><input type="checkbox" name="countries" value="290291|bh"> Bahrain (BH) - GCC</label>
+            <label><input type="checkbox" name="countries" value="102358|sa"> Saudi Arabia (SA) - GCC</label>
+            <label><input type="checkbox" name="countries" value="289688|qa"> Qatar (QA) - GCC</label>
+            <label><input type="checkbox" name="countries" value="69543|ye"> Yemen (YE) - GCC</label>
+            <label><input type="checkbox" name="countries" value="290557|ae"> United Arab Emirates (AE) - GCC</label>
+            <label><input type="checkbox" name="countries" value="357994|eg"> Egypt (EG) - North Africa</label>
+            <label><input type="checkbox" name="countries" value="2542007|ma"> Morocco (MA) - North Africa</label>
+            <label><input type="checkbox" name="countries" value="366755|sd"> Sudan (SD) - North Africa</label>
+            <label><input type="checkbox" name="countries" value="2464461|tn"> Tunisia (TN) - North Africa</label>
+            <label><input type="checkbox" name="countries" value="2589581|dz"> Algeria (DZ) - North Africa</label>
+            <label><input type="checkbox" name="countries" value="99237|iq"> Iraq (IQ) - Levant</label>
+            <label><input type="checkbox" name="countries" value="272103|lb"> Lebanon (LB) - Levant</label>
+            <label><input type="checkbox" name="countries" value="6254930|ps"> Palestine (PS) - Levant</label>
+            <label><input type="checkbox" name="countries" value="248816|jo"> Jordan (JO) - Levant</label>
             <label><input type="checkbox" name="countries" value="1327865|mm"> Myanmar (MM)</label>
             <label><input type="checkbox" name="countries" value="953987|za"> South Africa (ZA)</label>
         </div>
@@ -286,13 +286,14 @@
             <label><input type="checkbox" name="platforms" value="phone"> Phone</label>
         </div>
 
-        <label for="duration">Duration (in seconds, max 30):</label>
+        <label for="duration">On-Screen Duration (in seconds, max 30):</label>
         <input type="number" id="duration" min="1" max="30" required>
 
         <label for="batchLabel">Batch Label (Max 6 characters):</label>
         <input type="text" id="batchLabel" maxlength="6">
 
         <button type="button" onclick="generateCSV()">Convert to CSV</button>
+        <button type="button" onclick="generateXLSX()">Convert to Complete Infoline XLSX Form</button>
     </form>
 
     <div id="preview"></div>
@@ -331,6 +332,18 @@
             return Math.floor(date.getTime() / 1000);
         }
 
+        function dateToExcelSerial(year, month, day, hour, min, sec, offset) {
+            let date = new Date(Date.UTC(year, month - 1, day, hour, min, sec));
+            date.setUTCHours(date.getUTCHours() - parseInt(offset));
+            const epoch = new Date(Date.UTC(1899, 11, 30, 0, 0, 0));
+            const days = (date - epoch) / 86400000;
+            return days;
+        }
+
+        function getDateString(year, month, day, hour, min, sec) {
+            return year + '-' + pad2(month) + '-' + pad2(day) + ' ' + pad2(hour) + ':' + pad2(min) + ':' + pad2(sec);
+        }
+
         function csvEscape(field) {
             let str = field.toString();
             if (str.includes(',') || str.includes('"') || str.includes('\n')) {
@@ -343,12 +356,14 @@
             let cells = [];
             let current = '';
             let inQuote = false;
-            for (let char of line + ',') {  // Add trailing , to handle last cell
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
                 if (char === '"' && !inQuote) {
                     inQuote = true;
                 } else if (char === '"' && inQuote) {
-                    if (line[current.length + cells.join(',').length + cells.length] === '"') { // escaped "
+                    if (line[i + 1] === '"') {
                         current += '"';
+                        i++;
                     } else {
                         inQuote = false;
                     }
@@ -359,7 +374,8 @@
                     current += char;
                 }
             }
-            return cells.map(c => c.replace(/""/g, '"'));
+            if (current) cells.push(current);
+            return cells;
         }
 
         document.querySelectorAll('input[name="episodeInput"]').forEach(radio => {
@@ -369,169 +385,221 @@
             });
         });
 
-        async function generateCSV() {
-            try {
-                const campaignName = document.getElementById('campaignName').value.replace(/\s/g, '');
-                const region = document.getElementById('region').value;
-                const startYear = parseInt(document.getElementById('startYear').value);
-                const startMonth = parseInt(document.getElementById('startMonth').value);
-                const startDay = parseInt(document.getElementById('startDay').value);
-                const startHour = parseInt(document.getElementById('startHour').value);
-                const startMin = parseInt(document.getElementById('startMin').value);
-                const startSec = parseInt(document.getElementById('startSec').value);
-                const startTimezone = document.getElementById('startTimezone').value;
-                const endYear = parseInt(document.getElementById('endYear').value);
-                const endMonth = parseInt(document.getElementById('endMonth').value);
-                const endDay = parseInt(document.getElementById('endDay').value);
-                const endHour = parseInt(document.getElementById('endHour').value);
-                const endMin = parseInt(document.getElementById('endMin').value);
-                const endSec = parseInt(document.getElementById('endSec').value);
-                const endTimezone = document.getElementById('endTimezone').value;
-                const yymm = startYear.toString().slice(-2) + pad2(startMonth);
-                const backendName = `Infoline_${region}_${campaignName}_${yymm}`;
-                const title = document.getElementById('title').value;
-                const content = document.getElementById('content').value;
-                const cta = document.getElementById('cta').value;
-                const landing = document.getElementById('landing').value;
-                const duration = document.getElementById('duration').value;
-                const cueStr = document.getElementById('cuepoints').value;
-                const batchLabel = document.getElementById('batchLabel').value;
+        async function getData() {
+            const advertiser = document.getElementById('advertiser').value;
+            const campaignName = document.getElementById('campaignName').value.replace(/\s/g, '');
+            const region = document.getElementById('region').value;
+            const startYear = parseInt(document.getElementById('startYear').value);
+            const startMonth = parseInt(document.getElementById('startMonth').value);
+            const startDay = parseInt(document.getElementById('startDay').value);
+            const startHour = parseInt(document.getElementById('startHour').value);
+            const startMin = parseInt(document.getElementById('startMin').value);
+            const startSec = parseInt(document.getElementById('startSec').value);
+            const startTimezone = document.getElementById('startTimezone').value;
+            const endYear = parseInt(document.getElementById('endYear').value);
+            const endMonth = parseInt(document.getElementById('endMonth').value);
+            const endDay = parseInt(document.getElementById('endDay').value);
+            const endHour = parseInt(document.getElementById('endHour').value);
+            const endMin = parseInt(document.getElementById('endMin').value);
+            const endSec = parseInt(document.getElementById('endSec').value);
+            const endTimezone = document.getElementById('endTimezone').value;
+            const yymm = startYear.toString().slice(-2) + pad2(startMonth);
+            const backendName = `Infoline_${region}_${campaignName}_${yymm}`;
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const cta = document.getElementById('cta').value;
+            const landing = document.getElementById('landing').value;
+            const duration = document.getElementById('duration').value;
+            const cueStr = document.getElementById('cuepoints').value;
+            const batchLabel = document.getElementById('batchLabel').value;
 
-                if (!campaignName || !region || !cueStr || !title || !cta || !landing || !duration) {
-                    throw new Error('Missing required fields');
+            if (!campaignName || !region || !cueStr || !title || !cta || !landing || !duration) {
+                throw new Error('Missing required fields');
+            }
+
+            const cues = cueStr.split(',').map(c => c.trim()).filter(c => c);
+
+            if (cues.length === 0) {
+                throw new Error('No valid cuepoints provided');
+            }
+
+            let episodes = [];
+            const inputType = document.querySelector('input[name="episodeInput"]:checked').value;
+            if (inputType === 'direct') {
+                const seriesId = document.getElementById('seriesId').value.trim();
+                const productStr = document.getElementById('productIds').value;
+                if (!productStr) {
+                    throw new Error('No product IDs provided for direct input');
                 }
-
-                const cues = cueStr.split(',').map(c => c.trim()).filter(c => c);
-
-                if (cues.length === 0) {
-                    throw new Error('No valid cuepoints provided');
+                const products = productStr.split(',').map(p => p.trim()).filter(p => p);
+                if (products.length === 0) {
+                    throw new Error('No valid product IDs provided');
                 }
-
-                let episodes = [];
-                const inputType = document.querySelector('input[name="episodeInput"]:checked').value;
-                if (inputType === 'direct') {
-                    const seriesId = document.getElementById('seriesId').value.trim();
-                    const productStr = document.getElementById('productIds').value;
-                    if (!productStr) {
-                        throw new Error('No product IDs provided for direct input');
-                    }
-                    const products = productStr.split(',').map(p => p.trim()).filter(p => p);
-                    if (products.length === 0) {
-                        throw new Error('No valid product IDs provided');
-                    }
-                    episodes = products.map(p => ({seriesId, productId: p}));
-                } else if (inputType === 'file') {
-                    const file = document.getElementById('episodeFile').files[0];
-                    if (!file) {
-                        throw new Error('No episode file uploaded');
-                    }
-                    const rows = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const data = e.target.result;
-                            const wb = XLSX.read(data, {type: 'binary'});
-                            const ws = wb.Sheets[wb.SheetNames[0]];
-                            resolve(XLSX.utils.sheet_to_json(ws, {header: 1}));
-                        };
-                        reader.onerror = reject;
-                        reader.readAsBinaryString(file);
-                    });
-
-                    let currentSeries = null;
-                    for (let i = 1; i < rows.length; i++) {
-                        const row = rows[i];
-                        if (row.length < 5) continue;
-                        if (row[2]) currentSeries = row[2];
-                        if (row[4] && currentSeries) episodes.push({seriesId: currentSeries, productId: row[4]});
-                    }
-
-                    if (episodes.length === 0) {
-                        throw new Error('No episodes found in the uploaded file');
-                    }
+                episodes = products.map(p => ({seriesId: seriesId || '', productId: p}));
+            } else if (inputType === 'file') {
+                const file = document.getElementById('episodeFile').files[0];
+                if (!file) {
+                    throw new Error('No episode file uploaded');
                 }
-
-                const countryChecks = document.querySelectorAll('input[name="countries"]:checked');
-                const selectedCountries = Array.from(countryChecks).map(check => {
-                    const [id, code] = check.value.split('|');
-                    return {id, code: code.toLowerCase()};
+                const rows = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const data = e.target.result;
+                        const wb = XLSX.read(data, {type: 'binary'});
+                        const ws = wb.Sheets[wb.SheetNames[0]];
+                        resolve(XLSX.utils.sheet_to_json(ws, {header: 1}));
+                    };
+                    reader.onerror = reject;
+                    reader.readAsBinaryString(file);
                 });
 
-                if (selectedCountries.length === 0) {
-                    throw new Error('At least one country must be selected');
+                let currentSeries = null;
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row.length < 5) continue;
+                    if (row[2]) currentSeries = row[2];
+                    if (row[4] && currentSeries) episodes.push({seriesId: currentSeries, productId: row[4]});
                 }
 
-                const userChecks = document.querySelectorAll('input[name="userTypes"]:checked');
-                const selectedUserTypes = Array.from(userChecks).map(check => check.value);
-                const anon = selectedUserTypes.includes('anonymous') ? 1 : 0;
-                const free = selectedUserTypes.includes('free') ? 1 : 0;
-                const prem = selectedUserTypes.includes('premium') ? 1 : 0;
-
-                const platformChecks = document.querySelectorAll('input[name="platforms"]:checked');
-                const selectedPlatforms = Array.from(platformChecks).map(check => check.value);
-
-                if (selectedPlatforms.length === 0) {
-                    throw new Error('At least one platform must be selected');
+                if (episodes.length === 0) {
+                    throw new Error('No episodes found in the uploaded file');
                 }
+            }
 
-                const startUnix = getUnixTimestamp(startYear, startMonth, startDay, startHour, startMin, startSec, startTimezone);
-                const endUnix = getUnixTimestamp(endYear, endMonth, endDay, endHour, endMin, endSec, endTimezone);
+            const countryChecks = document.querySelectorAll('input[name="countries"]:checked');
+            const selectedCountries = Array.from(countryChecks).map(check => {
+                const [id, code] = check.value.split('|');
+                return {id, code: code.toLowerCase()};
+            });
 
-                if (startUnix >= endUnix) {
-                    throw new Error('Start time must be before end time');
-                }
+            if (selectedCountries.length === 0) {
+                throw new Error('At least one country must be selected');
+            }
 
-                let combinations = [];
-                episodes.forEach(episode => {
-                    cues.forEach(cue => {
-                        selectedCountries.forEach(country => {
-                            combinations.push({
-                                seriesId: episode.seriesId,
-                                product: episode.productId,
-                                cue,
-                                country_id: country.id,
-                                country_code: country.code
-                            });
+            const userChecks = document.querySelectorAll('input[name="userTypes"]:checked');
+            const selectedUserTypes = Array.from(userChecks).map(check => check.value);
+            const anon = selectedUserTypes.includes('anonymous') ? 1 : 0;
+            const free = selectedUserTypes.includes('free') ? 1 : 0;
+            const prem = selectedUserTypes.includes('premium') ? 1 : 0;
+
+            let userTypeStr = '';
+            if (prem) {
+                userTypeStr = 'Paid';
+            } else if (anon && free) {
+                userTypeStr = 'Anonymous and Free';
+            } else {
+                userTypeStr = selectedUserTypes.join(' and ');
+            }
+
+            const platformChecks = document.querySelectorAll('input[name="platforms"]:checked');
+            const selectedPlatforms = Array.from(platformChecks).map(check => check.value);
+
+            if (selectedPlatforms.length === 0) {
+                throw new Error('At least one platform must be selected');
+            }
+
+            const platformStr = selectedPlatforms.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('/ ');
+
+            const startUnix = getUnixTimestamp(startYear, startMonth, startDay, startHour, startMin, startSec, startTimezone);
+            const endUnix = getUnixTimestamp(endYear, endMonth, endDay, endHour, endMin, endSec, endTimezone);
+
+            if (startUnix >= endUnix) {
+                throw new Error('Start time must be before end time');
+            }
+
+            const startDateStr = getDateString(startYear, startMonth, startDay, startHour, startMin, startSec);
+            const endDateStr = getDateString(endYear, endMonth, endDay, endHour, endMin, endSec);
+
+            const startSerial = dateToExcelSerial(startYear, startMonth, startDay, startHour, startMin, startSec, startTimezone);
+            const endSerial = dateToExcelSerial(endYear, endMonth, endDay, endHour, endMin, endSec, endTimezone);
+
+            let combinations = [];
+            episodes.forEach(episode => {
+                cues.forEach(cue => {
+                    selectedCountries.forEach(country => {
+                        combinations.push({
+                            seriesId: episode.seriesId,
+                            product: episode.productId,
+                            cue,
+                            country_id: country.id,
+                            country_code: country.code
                         });
                     });
                 });
+            });
 
-                let groups = {};
-                combinations.forEach(combo => {
-                    if (!groups[combo.product]) groups[combo.product] = [];
-                    groups[combo.product].push(combo);
+            let groups = {};
+            combinations.forEach(combo => {
+                if (!groups[combo.product]) groups[combo.product] = [];
+                groups[combo.product].push(combo);
+            });
+
+            Object.keys(groups).forEach(product => {
+                const group = groups[product];
+                group.forEach((combo, index) => {
+                    combo.running_number = pad2(index + 1);
                 });
+            });
 
-                Object.keys(groups).forEach(product => {
-                    const group = groups[product];
-                    group.forEach((combo, index) => {
-                        combo.running_number = pad2(index + 1);
-                    });
-                });
+            const seriesIds = [...new Set(episodes.map(e => e.seriesId).filter(s => s))].join(', ');
 
+            return {
+                advertiser,
+                campaignName,
+                region,
+                yymm,
+                backendName,
+                title,
+                content,
+                cta,
+                landing,
+                duration,
+                cueStr,
+                batchLabel,
+                combinations,
+                anon,
+                free,
+                prem,
+                startUnix,
+                endUnix,
+                selectedPlatforms,
+                startDateStr,
+                endDateStr,
+                startSerial,
+                endSerial,
+                userTypeStr,
+                platformStr,
+                seriesIds
+            };
+        }
+
+        async function generateCSV() {
+            try {
+                const data = await getData();
                 const headers = ['series_id','product_id','batch_id','name','backend_name','cover_image_uri','start_time','time_duration','popup_content','ad_tag','ad_link','ad_auto_show_anonymous_user','ad_auto_show_free_user','ad_auto_show_premium_user','ad_schedule_start_time','ad_schedule_end_time','platform','country_ids'];
                 let csvRows = [headers.join(',')];
 
-                combinations.forEach(combo => {
-                    const batchId = `${combo.country_code}${yymm}${combo.running_number}${batchLabel}`;
+                data.combinations.forEach(combo => {
+                    const batchId = `${combo.country_code}${data.yymm}${combo.running_number}${data.batchLabel}`;
                     const row = [
                         combo.seriesId,
                         combo.product,
                         batchId,
-                        title,
-                        backendName,
+                        data.title,
+                        data.backendName,
                         '',
                         combo.cue,
-                        duration,
-                        content,
-                        cta,
-                        landing,
-                        anon,
-                        free,
-                        prem,
-                        startUnix,
-                        endUnix,
-                        JSON.stringify(selectedPlatforms),
-                        combo.country_id
+                        data.duration,
+                        data.content,
+                        data.cta,
+                        data.landing,
+                        data.anon,
+                        data.free,
+                        data.prem,
+                        data.startUnix,
+                        data.endUnix,
+                        JSON.stringify(data.selectedPlatforms),
+                        data.country_id
                     ].map(csvEscape);
                     csvRows.push(row.join(','));
                 });
@@ -543,7 +611,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `${backendName}.csv`;
+                a.download = `${data.backendName}.csv`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -589,30 +657,76 @@
             }
         }
 
-        function parseCSVLine(line) {
-            let cells = [];
-            let current = '';
-            let inQuote = false;
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                if (char === '"' && !inQuote) {
-                    inQuote = true;
-                } else if (char === '"' && inQuote) {
-                    if (line[i + 1] === '"') {
-                        current += '"';
-                        i++;
-                    } else {
-                        inQuote = false;
-                    }
-                } else if (char === ',' && !inQuote) {
-                    cells.push(current);
-                    current = '';
-                } else {
-                    current += char;
-                }
+        async function generateXLSX() {
+            try {
+                const data = await getData();
+
+                const spec_aoa = [
+                    [`Suggested file name: Infoline_${data.region}_${data.campaignName}_${data.yymm}`],
+                    [null],
+                    ["Preparation", "Input Text & Informaton", "Text Calculation for reference", "Remarks", "updated 19 Mar., 2024"],
+                    ["Advertiser / Brand name", data.advertiser],
+                    ["Advertiser brand category"],
+                    ["Campaign Budget"],
+                    ["Targeted impressions"],
+                    ["Ad Start Date & Time", data.startSerial, null, "Defualt: Running at 00:00 on start date"],
+                    ["Ad End Date & Time", data.endSerial, null, "Defualt: Stop running at 23:59 on end date"],
+                    ["Ad Name/Campaign Name ", data.campaignName, data.campaignName.length, "Max 50 characters with space / 25 Chinese or Thai characters with space"],
+                    ["Backend Name ", data.backendName, null, '=HYPERLINK("https://docs.google.com/spreadsheets/d/1idM572iMZJ5IB5ZMtTG7vmM7CMX50Bg0U1duV_eWFUU/edit#gid=1219652994","Backend Name Generator")'],
+                    ["Cover Image", "as attached", null, "16:9 — Min. resolution 682x384px\nMax. file size 60kb\n"],
+                    ["Ads start time (in second)", data.cueStr],
+                    ["Infoline Ad Duration ", data.duration, null, "In sec (Default the length in 6 sec)"],
+                    ["Infoline Content (Optional)\n(广告内容)", data.content, data.content.length, "Max 100 characters with space / 50 Chinese or Thai characters with space"],
+                    ["Infoline Button Label ", data.cta, data.cta.length, "Max.12 English characters with space / 6 Chinese or Thai characters with space"],
+                    ["Infoline Landing URL", data.landing, null, "http:// or https://"],
+                    [null],
+                    ["Targeting"],
+                    ["Targeting Scene", null, null, "E.g. Crying/ Kissing/ Nude & Bath"],
+                    ["Languages", null, null, "Depending on content availability (Default for all avaliable language on local market)"],
+                    ["User type/Auto Display", data.userTypeStr, null, "E.g. Anonymous and Free (Default) / Paid \n** Non-targeted users can still click to see the infoline ad"],
+                    ["Platform", data.platformStr, null, "E.g. Web/ Mobile App/ Tablet App"],
+                    ["Series ID", data.seriesIds],
+                    ["Additional Information (If Any)", null, null, "E.g. Category/ Series/ Episode"]
+                ];
+
+                const bulk_aoa = [
+                    [null, null, "Batch ID", "Title", "Backend Name", "Cover", "Ads start time (in second)", "Infoline Ad Duration", "Infoline Content", "Infoline Button Label", "Infoline Landing", "Auto Display", "Auto Display", "Auto Display", "Ads Start Date", "Ads End Date", "platform"],
+                    ["Series ID", "product_id", "batch_id", "name", "backend_name", "cover_image_uri", "start_time", "time_duration", "popup_content", "ad_tag", "ad_link", "ad_auto_show_anonymous_user", "ad_auto_show_free_user", "ad_auto_show_premium_user", "ad_schedule_start_time", "ad_schedule_end_time", "platform", "country_ids"]
+                ];
+
+                data.combinations.forEach(combo => {
+                    const batchId = `${combo.country_code}${data.yymm}${combo.running_number}${data.batchLabel}`;
+                    bulk_aoa.push([
+                        combo.seriesId,
+                        combo.product,
+                        batchId,
+                        data.title,
+                        data.backendName,
+                        '',
+                        combo.cue,
+                        data.duration,
+                        data.content,
+                        data.cta,
+                        data.landing,
+                        data.anon,
+                        data.free,
+                        data.prem,
+                        data.startUnix,
+                        data.endUnix,
+                        JSON.stringify(data.selectedPlatforms),
+                        combo.country_id
+                    ]);
+                });
+
+                const wb = XLSX.utils.book_new();
+                const ws_spec = XLSX.utils.aoa_to_sheet(spec_aoa);
+                XLSX.utils.book_append_sheet(wb, ws_spec, "Infoline Spec Form");
+                const ws_bulk = XLSX.utils.aoa_to_sheet(bulk_aoa);
+                XLSX.utils.book_append_sheet(wb, ws_bulk, "NEW! Infoline Bulk upload templ");
+                XLSX.writeFile(wb, `${data.backendName}.xlsx`);
+            } catch (e) {
+                alert('Errors:\n- ' + e.message);
             }
-            cells.push(current);
-            return cells;
         }
 
         populateSelects();
