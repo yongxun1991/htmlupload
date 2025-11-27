@@ -64,4 +64,112 @@
                     <option value="-06:00">-06:00</option>
                     <option value="-05:00">-05:00</option>
                     <option value="-04:00">-04:00</option>
-                    <option value="-03:
+                    <option value="-03:00">-03:00</option>
+                    <option value="-02:00">-02:00</option>
+                    <option value="-01:00">-01:00</option>
+                    <option value="+00:00" selected>+00:00 (UTC)</option>
+                    <option value="+01:00">+01:00</option>
+                    <option value="+02:00">+02:00</option>
+                    <option value="+03:00">+03:00</option>
+                    <option value="+04:00">+04:00</option>
+                    <option value="+05:00">+05:00</option>
+                    <option value="+06:00">+06:00</option>
+                    <option value="+07:00">+07:00</option>
+                    <option value="+08:00">+08:00</option>
+                    <option value="+09:00">+09:00</option>
+                    <option value="+10:00">+10:00</option>
+                    <option value="+11:00">+11:00</option>
+                    <option value="+12:00">+12:00</option>
+                </select>
+                <div class="error" id="timezone-error">Invalid timezone.</div>
+            </div>
+        </div>
+        <button onclick="convertToTimestamp()">Convert to Timestamp</button>
+        <div id="timestamp-result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>Convert UNIX Timestamp to Date/Time</h2>
+        <div class="input-group">
+            <div class="input-field" style="flex: 3;">
+                <label for="timestamp">UNIX Timestamp (seconds):</label>
+                <input type="number" id="timestamp" min="0" required>
+                <div class="error" id="timestamp-error">Invalid timestamp (non-negative integer).</div>
+            </div>
+        </div>
+        <button onclick="convertFromTimestamp()">Convert to Date/Time</button>
+        <div id="datetime-result"></div>
+    </div>
+
+    <script>
+        function validateInput(id, condition, errorMsg) {
+            const input = document.getElementById(id);
+            const error = document.getElementById(id + '-error');
+            if (!condition(input.value)) {
+                error.textContent = errorMsg;
+                error.style.display = 'block';
+                input.focus();
+                return false;
+            }
+            error.style.display = 'none';
+            return true;
+        }
+
+        function getDaysInMonth(year, month) {
+            return new Date(year, month, 0).getDate();
+        }
+
+        function validateDate(year, month, day) {
+            if (month < 1 || month > 12) return false;
+            const maxDay = getDaysInMonth(year, month);
+            return day >= 1 && day <= maxDay;
+        }
+
+        function parseTimezoneOffset(tz) {
+            const [sign, hours, minutes] = tz.match(/([+-])(\d{2}):(\d{2})/).slice(1);
+            return (sign === '+' ? 1 : -1) * (parseInt(hours) * 60 + parseInt(minutes)) * 60 * 1000;
+        }
+
+        function convertToTimestamp() {
+            const year = parseInt(document.getElementById('year').value);
+            const month = parseInt(document.getElementById('month').value);
+            const day = parseInt(document.getElementById('day').value);
+            const hour = parseInt(document.getElementById('hour').value);
+            const minute = parseInt(document.getElementById('minute').value);
+            const second = parseInt(document.getElementById('second').value);
+            const timezone = document.getElementById('timezone').value;
+
+            let valid = true;
+            valid &= validateInput('year', v => v >= 1970 && v <= 9999, 'Invalid year (1970-9999).');
+            valid &= validateInput('month', v => v >= 1 && v <= 12, 'Invalid month (1-12).');
+            valid &= validateInput('day', v => validateDate(year, month, v), 'Invalid day for this month/year.');
+            valid &= validateInput('hour', v => v >= 0 && v <= 23, 'Invalid hour (0-23).');
+            valid &= validateInput('minute', v => v >= 0 && v <= 59, 'Invalid minute (0-59).');
+            valid &= validateInput('second', v => v >= 0 && v <= 59, 'Invalid second (0-59).');
+            valid &= validateInput('timezone', v => /^([+-]\d{2}:\d{2})$/.test(v), 'Invalid timezone.');
+
+            if (!valid) return;
+
+            // Create date in local timezone, then adjust to UTC by subtracting offset
+            const localDate = new Date(year, month - 1, day, hour, minute, second);
+            const offsetMs = parseTimezoneOffset(timezone);
+            const utcMs = localDate.getTime() - offsetMs; // Adjust to UTC
+            const timestamp = Math.floor(utcMs / 1000);
+
+            document.getElementById('timestamp-result').innerHTML = `UNIX Timestamp: ${timestamp}`;
+        }
+
+        function convertFromTimestamp() {
+            const timestamp = parseInt(document.getElementById('timestamp').value);
+
+            const valid = validateInput('timestamp', v => Number.isInteger(parseFloat(v)) && v >= 0, 'Invalid timestamp (non-negative integer).');
+            if (!valid) return;
+
+            const date = new Date(timestamp * 1000);
+            const formatted = date.toUTCString() + ` (UTC)`;
+
+            document.getElementById('datetime-result').innerHTML = `Date/Time: ${formatted}<br>Breakdown:<br>Year: ${date.getUTCFullYear()}<br>Month: ${date.getUTCMonth() + 1}<br>Day: ${date.getUTCDate()}<br>Hour: ${date.getUTCHours()}<br>Minute: ${date.getUTCMinutes()}<br>Second: ${date.getUTCSeconds()}`;
+        }
+    </script>
+</body>
+</html>
