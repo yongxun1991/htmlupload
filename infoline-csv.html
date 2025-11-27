@@ -88,7 +88,7 @@
 </head>
 <body>
     <h1>Infoline CSV Converter</h1>
-    <h2>v1.1</h2>
+    <h2>v1.2</h2>
     <button type="button" onclick="location.reload()">Clean Record</button>
     <form id="converterForm">
         <label for="advertiser">Advertiser:</label>
@@ -803,7 +803,7 @@
                 addBulkSheet(bulk_aoa, "NEW! Infoline Bulk upload templ");
                 addCountrySheet(country_aoa, "country id");
 
-                XLSX.writeFile(wb, `${data.backendName}.xlsx`, {bookSST: true});
+                XLSX.writeFile(wb, `${data.backendName}.xlsx`);
             } catch (e) {
                 alert('Errors:\n- ' + e.message);
             }
