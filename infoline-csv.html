@@ -332,16 +332,9 @@
             return Math.floor(date.getTime() / 1000);
         }
 
-        function dateToExcelSerial(year, month, day, hour, min, sec, offset) {
-            let date = new Date(Date.UTC(year, month - 1, day, hour, min, sec));
-            date.setUTCHours(date.getUTCHours() - parseInt(offset));
-            const epoch = new Date(Date.UTC(1899, 11, 30, 0, 0, 0));
-            const days = (date - epoch) / 86400000;
-            return days;
-        }
-
-        function getDateString(year, month, day, hour, min, sec) {
-            return year + '-' + pad2(month) + '-' + pad2(day) + ' ' + pad2(hour) + ':' + pad2(min) + ':' + pad2(sec);
+        function formatDate(year, month, day) {
+            const date = new Date(year, month - 1, day);
+            return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         }
 
         function csvEscape(field) {
@@ -486,7 +479,7 @@
             if (prem) {
                 userTypeStr = 'Paid';
             } else if (anon && free) {
-                userTypeStr = 'Anonymous and Free';
+                userTypeStr = 'Anonymous and Free (Default)';
             } else {
                 userTypeStr = selectedUserTypes.join(' and ');
             }
@@ -507,11 +500,8 @@
                 throw new Error('Start time must be before end time');
             }
 
-            const startDateStr = getDateString(startYear, startMonth, startDay, startHour, startMin, startSec);
-            const endDateStr = getDateString(endYear, endMonth, endDay, endHour, endMin, endSec);
-
-            const startSerial = dateToExcelSerial(startYear, startMonth, startDay, startHour, startMin, startSec, startTimezone);
-            const endSerial = dateToExcelSerial(endYear, endMonth, endDay, endHour, endMin, endSec, endTimezone);
+            const startDateStr = formatDate(startYear, startMonth, startDay);
+            const endDateStr = formatDate(endYear, endMonth, endDay);
 
             let combinations = [];
             episodes.forEach(episode => {
@@ -565,8 +555,6 @@
                 selectedPlatforms,
                 startDateStr,
                 endDateStr,
-                startSerial,
-                endSerial,
                 userTypeStr,
                 platformStr,
                 seriesIds
@@ -599,7 +587,7 @@
                         data.startUnix,
                         data.endUnix,
                         JSON.stringify(data.selectedPlatforms),
-                        data.country_id
+                        combo.country_id
                     ].map(csvEscape);
                     csvRows.push(row.join(','));
                 });
@@ -661,36 +649,85 @@
             try {
                 const data = await getData();
 
+                // Deprecated Spec Form
+                const dep_spec_aoa = [
+                    ["Preparation", "Input Text & Informaton", "Text Calculation for reference", "Remarks"],
+                    ["Advertiser / Brand name", null, null, null],
+                    ["Advertiser brand category", null, null, null],
+                    ["Campaign Budget", null, null, null],
+                    ["Targeted impressions", null, null, null],
+                    ["Backend Name (Optional)", null, null, null],
+                    ["Ad Start Date & Time", null, null, "Defualt: Running at 00:00 on start date"],
+                    ["Ad End Date & Time", null, null, "Defualt: Stop running at 23:59 on end date"],
+                    ["Cover Image (封面)", null, null, "16:9 — Min. resolution 682x384px\nMax. file size 60kb"],
+                    ["Ad Name (广告名称)", null, 0, "Max 50 characters with space / 25 Chinese or Thai characters with space"],
+                    ["Infoline Ad Duration (广告持续时长(秒))", null, null, "In sec (Default the length in 6 sec)"],
+                    ["Infoline Content (Optional)\n(广告内容)", null, 0, "Max 100 characters with space / 50 Chinese or Thai characters with space"],
+                    ["Infoline Button Label (广告按钮标签)", null, 0, "Max. 12 English characters with space / 6 Chinese or Thai characters with space"],
+                    ["Infoline Landing URL (广告链接)", null, null, "http:// or https://"],
+                    [null, null, null, null],
+                    ["Targeting", null, null, null],
+                    ["Targeting Sence", null, null, "E.g. Crying/ Kissing/ Nude & Bath"],
+                    ["Languages", null, null, "Depending on content availability (Default for all avaliable language on local market)"],
+                    ["User type", null, null, "E.g. Anonymous and Free (Default) / Paid \n** Non-targeted users can still click to see the infoline ad"],
+                    ["Platform", null, null, "E.g. Web/ Mobile App/ Tablet App"],
+                    ["Additional Information (If Any)", null, null, "E.g. Category/ Series/ Episode"],
+                    [null, null, null, null],
+                    ["Internal Use", null, null, null],
+                    ["* Backend Name 广告后台名称", "Backend Name Generator", null, null]
+                ];
+
+                // Spec Form
                 const spec_aoa = [
-                    [`Suggested file name: Infoline_${data.region}_${data.campaignName}_${data.yymm}`],
-                    [null],
+                    [`Suggested file name: Infoline_{region id}_{campaign name}_{campaign start month/year: yymm}`, null, null, null],
+                    [null, null, null, null],
                     ["Preparation", "Input Text & Informaton", "Text Calculation for reference", "Remarks", "updated 19 Mar., 2024"],
-                    ["Advertiser / Brand name", data.advertiser],
-                    ["Advertiser brand category"],
-                    ["Campaign Budget"],
-                    ["Targeted impressions"],
-                    ["Ad Start Date & Time", data.startSerial, null, "Defualt: Running at 00:00 on start date"],
-                    ["Ad End Date & Time", data.endSerial, null, "Defualt: Stop running at 23:59 on end date"],
+                    ["Advertiser / Brand name", data.advertiser, null, null],
+                    ["Advertiser brand category", null, null, null],
+                    ["Campaign Budget", null, null, null],
+                    ["Targeted impressions", null, null, null],
+                    ["Ad Start Date & Time", data.startDateStr, null, "Defualt: Running at 00:00 on start date"],
+                    ["Ad End Date & Time", data.endDateStr, null, "Defualt: Stop running at 23:59 on end date"],
                     ["Ad Name/Campaign Name ", data.campaignName, data.campaignName.length, "Max 50 characters with space / 25 Chinese or Thai characters with space"],
-                    ["Backend Name ", data.backendName, null, '=HYPERLINK("https://docs.google.com/spreadsheets/d/1idM572iMZJ5IB5ZMtTG7vmM7CMX50Bg0U1duV_eWFUU/edit#gid=1219652994","Backend Name Generator")'],
+                    ["Backend Name ", data.backendName, null, "Backend Name Generator"],
                     ["Cover Image", "as attached", null, "16:9 — Min. resolution 682x384px\nMax. file size 60kb\n"],
-                    ["Ads start time (in second)", data.cueStr],
+                    ["Ads start time (in second)", data.cueStr, null, null],
                     ["Infoline Ad Duration ", data.duration, null, "In sec (Default the length in 6 sec)"],
                     ["Infoline Content (Optional)\n(广告内容)", data.content, data.content.length, "Max 100 characters with space / 50 Chinese or Thai characters with space"],
                     ["Infoline Button Label ", data.cta, data.cta.length, "Max.12 English characters with space / 6 Chinese or Thai characters with space"],
                     ["Infoline Landing URL", data.landing, null, "http:// or https://"],
-                    [null],
-                    ["Targeting"],
+                    [null, null, null, null],
+                    ["Targeting", null, null, null],
                     ["Targeting Scene", null, null, "E.g. Crying/ Kissing/ Nude & Bath"],
                     ["Languages", null, null, "Depending on content availability (Default for all avaliable language on local market)"],
                     ["User type/Auto Display", data.userTypeStr, null, "E.g. Anonymous and Free (Default) / Paid \n** Non-targeted users can still click to see the infoline ad"],
                     ["Platform", data.platformStr, null, "E.g. Web/ Mobile App/ Tablet App"],
-                    ["Series ID", data.seriesIds],
+                    ["Series ID", data.seriesIds, null, null],
                     ["Additional Information (If Any)", null, null, "E.g. Category/ Series/ Episode"]
                 ];
 
+                // Dep Bulk
+                const dep_bulk_aoa = [
+                    ["(A) Campaign already inserted", null, null, null, null, null, "(B) Bulk upload", null, null, null],
+                    ["Infoline Ad ID", "Series ID", "Product ID", "Timestamp", "Campaign start date", "Campaign end date", "Series ID", "Product ID", "Timestamp", "Ad duration"],
+                    [null, 117344, 3853492, 180, 45275, 45291, 117344, 3853492, 180, 30],
+                    [null, null, null, null, null, null, 117344, 3853492, 380, 30],
+                    [null, null, null, null, null, null, 117344, 3853438, 757, 30],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null],
+                    ["Steps:\n1. AdOps team fill up the campaign start/end date in section (A) and column G to J in the section (B)\n2. AdOps team submit GSF with the Google link\n3. Support team pick the 1st row from section (B) and configure in the CMS (remarks: Product ID=Episode ID in CMS)\n4. Support team fill the \"Infoline Ad ID\" in section (A) with the information configured in the CMS\n5. Support team export the file in CSV format and upload to corresponding Jira \n6. Once the file is confirmed by AdOps team, the Support team tag Daniel in the Jira for bulk upload action", null, null, null, null, null, null, null, null, null]
+                ];
+
+                // New Bulk
                 const bulk_aoa = [
-                    [null, null, "Batch ID", "Title", "Backend Name", "Cover", "Ads start time (in second)", "Infoline Ad Duration", "Infoline Content", "Infoline Button Label", "Infoline Landing", "Auto Display", "Auto Display", "Auto Display", "Ads Start Date", "Ads End Date", "platform"],
+                    [null, null, "Batch ID", "Title", "Backend Name", "Cover", "Ads start time (in second)", "Infoline Ad Duration", "Infoline Content", "Infoline Button Label", "Infoline Landing", "Auto Display", "Auto Display", "Auto Display", "Ads Start Date", "Ads End Date", "platform", null],
                     ["Series ID", "product_id", "batch_id", "name", "backend_name", "cover_image_uri", "start_time", "time_duration", "popup_content", "ad_tag", "ad_link", "ad_auto_show_anonymous_user", "ad_auto_show_free_user", "ad_auto_show_premium_user", "ad_schedule_start_time", "ad_schedule_end_time", "platform", "country_ids"]
                 ];
 
@@ -718,11 +755,56 @@
                     ]);
                 });
 
+                // Country ID
+                const country_aoa = [
+                    ["Country Code", "Country Name", "Country ID", "Default Language / Code"],
+                    ["Hong Kong", "HK", "Hong Kong", 1819730],
+                    ["Singapore", "SG", "Singapore", 1880251],
+                    ["Thailand", "TH", "Thailand", 1605651],
+                    ["Philippines", "PH", "Philippines", 1694008],
+                    ["Indonesia", "ID", "Indonesia", 1643084],
+                    ["Malaysia", "MY", "Malaysia", 1733045],
+                    ["Gulf Co-operation Council (GCC)", "OM", "Oman", 286963],
+                    [null, "KW", "Kuwait", 285570],
+                    [null, "BH", "Bahrain", 290291],
+                    [null, "SA", "Saudi Arabia", 102358],
+                    [null, "QA", "Qatar", 289688],
+                    [null, "YE", "Yemen", 69543],
+                    [null, "AE", "United Arabs Emirates", 290557],
+                    ["North Africa", "EG", "Egypt", 357994],
+                    [null, "MA", "Morocco", 2542007],
+                    [null, "SD", "Sudan", 366755],
+                    [null, "TN", "Tunisia", 2464461],
+                    [null, "DZ", "Algeria", 2589581],
+                    ["Levant", "IQ", "Iraq", 99237],
+                    [null, "LB", "Lebanon", 272103],
+                    [null, "PS", "Palestine", 6254930],
+                    [null, "JO", "Jordan", 248816],
+                    ["Myanmar", "MM", "Myanmar", 1327865],
+                    ["South Africa", "ZA", "South Africa", 953987]
+                ];
+
                 const wb = XLSX.utils.book_new();
-                const ws_spec = XLSX.utils.aoa_to_sheet(spec_aoa);
-                XLSX.utils.book_append_sheet(wb, ws_spec, "Infoline Spec Form");
-                const ws_bulk = XLSX.utils.aoa_to_sheet(bulk_aoa);
-                XLSX.utils.book_append_sheet(wb, ws_bulk, "NEW! Infoline Bulk upload templ");
+
+                // Add sheets with basic styling (SheetJS has limited styling, but we can set some)
+                const addSheet = (aoa, name) => {
+                    const ws = XLSX.utils.aoa_to_sheet(aoa);
+                    // Add some basic header bold
+                    for (let C = 0; C < aoa[0].length; ++C) {
+                        const cell = XLSX.utils.encode_cell({r:0, c:C});
+                        if (!ws[cell]) ws[cell] = {};
+                        if (!ws[cell].s) ws[cell].s = {};
+                        ws[cell].s.font = {bold: true};
+                    }
+                    XLSX.utils.book_append_sheet(wb, ws, name);
+                };
+
+                addSheet(dep_spec_aoa, "(deprecated) Infoline Spec Form");
+                addSheet(spec_aoa, "Infoline Spec Form");
+                addSheet(dep_bulk_aoa, "(dep)Infoline Bulk upload templ");
+                addSheet(bulk_aoa, "NEW! Infoline Bulk upload templ");
+                addSheet(country_aoa, "country id");
+
                 XLSX.writeFile(wb, `${data.backendName}.xlsx`);
             } catch (e) {
                 alert('Errors:\n- ' + e.message);
