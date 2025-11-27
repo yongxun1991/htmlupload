@@ -786,30 +786,52 @@
 
                 const wb = XLSX.utils.book_new();
 
-                // Add sheets with improved styling
                 const addSheet = (aoa, name) => {
                     const ws = XLSX.utils.aoa_to_sheet(aoa);
-                    ws['!cols'] = [{wch: 30}, {wch: 30}, {wch: 25}, {wch: 50}, {wch: 20}]; // Approximate column widths
-                    ws['!rows'] = new Array(aoa.length).fill({hpt: 15}); // Row heights
+                    ws['!cols'] = [{wch: 30}, {wch: 30}, {wch: 25}, {wch: 50}, {wch: 20}];
+                    ws['!rows'] = new Array(aoa.length).fill({hpt: 15});
 
-                    // Style header row
                     for (let R = 0; R < aoa.length; ++R) {
                         for (let C = 0; C < aoa[R].length; ++C) {
-                            const cell = XLSX.utils.encode_cell({r: R, c: C});
-                            if (!ws[cell]) continue;
-                            if (!ws[cell].s) ws[cell].s = {};
-                            if (R === 2) { // Preparation row
-                                ws[cell].s.fill = {patternType: "solid", fgColor: {rgb: "F4B084"}}; // Orange-yellow
-                                ws[cell].s.font = {bold: true};
-                                ws[cell].s.alignment = {vertical: "center", wrapText: true};
-                            } else if (R === 0 || R === 1) {
-                                ws[cell].s.font = {italic: true};
-                            } else {
-                                if (C === 0) {
-                                    ws[cell].s.font = {bold: true};
-                                }
+                            const cellAddr = XLSX.utils.encode_cell({r: R, c: C});
+                            if (!ws[cellAddr]) continue;
+                            if (!ws[cellAddr].s) ws[cellAddr].s = {};
+                            ws[cellAddr].s.border = {
+                                top: {style: "thin", color: {rgb: "000000"}},
+                                bottom: {style: "thin", color: {rgb: "000000"}},
+                                left: {style: "thin", color: {rgb: "000000"}},
+                                right: {style: "thin", color: {rgb: "000000"}}
+                            };
+                            ws[cellAddr].s.alignment = {vertical: "center", wrapText: true};
+                            ws[cellAddr].s.font = {color: {rgb: "000000"}};
+                            if (R === 2) {
+                                ws[cellAddr].s.fill = {patternType: "solid", fgColor: {rgb: "FFC000"}};
+                                ws[cellAddr].s.font.bold = true;
+                            } else if (C === 0 && R > 2) {
+                                ws[cellAddr].s.font.bold = true;
+                            } else if (R === 18) { // Targeting
+                                ws[cellAddr].s.fill = {patternType: "solid", fgColor: {rgb: "FFC000"}};
+                                ws[cellAddr].s.font.bold = true;
                             }
                         }
+                    }
+
+                    // Formulas
+                    if (name === "Infoline Spec Form") {
+                        const nameCell = 'C10';
+                        ws[nameCell].f = 'LEN(B10)';
+                        ws[nameCell].z = '0';
+
+                        const contentCell = 'C15';
+                        ws[contentCell].f = 'LEN(B15)';
+                        ws[contentCell].z = '0';
+
+                        const buttonCell = 'C16';
+                        ws[buttonCell].f = 'LEN(B16)';
+                        ws[buttonCell].z = '0';
+
+                        const generatorCell = 'D11';
+                        ws[generatorCell].f = 'HYPERLINK("https://docs.google.com/spreadsheets/d/1idM572iMZJ5IB5ZMtTG7vmM7CMX50Bg0U1duV_eWFUU/edit#gid=1219652994","Backend Name Generator")';
                     }
 
                     XLSX.utils.book_append_sheet(wb, ws, name);
@@ -820,11 +842,27 @@
                     ws['!cols'] = [{wch: 15}, {wch: 15}, {wch: 15}, {wch: 25}, {wch: 30}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 20}, {wch: 20}, {wch: 25}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 15}];
                     ws['!rows'] = new Array(aoa.length).fill({hpt: 15});
 
-                    // Style headers
-                    for (let C = 0; C < aoa[1].length; ++C) {
-                        const cell = XLSX.utils.encode_cell({r:1, c:C});
-                        if (!ws[cell]) continue;
-                        ws[cell].s = {font: {bold: true}, fill: {patternType: "solid", fgColor: {rgb: "FFFF00"}}}; // Yellow
+                    for (let R = 0; R < aoa.length; ++R) {
+                        for (let C = 0; C < aoa[R].length; ++C) {
+                            const cellAddr = XLSX.utils.encode_cell({r: R, c: C});
+                            if (!ws[cellAddr]) continue;
+                            if (!ws[cellAddr].s) ws[cellAddr].s = {};
+                            ws[cellAddr].s.border = {
+                                top: {style: "thin", color: {rgb: "000000"}},
+                                bottom: {style: "thin", color: {rgb: "000000"}},
+                                left: {style: "thin", color: {rgb: "000000"}},
+                                right: {style: "thin", color: {rgb: "000000"}}
+                            };
+                            ws[cellAddr].s.alignment = {vertical: "center", wrapText: true};
+                            ws[cellAddr].s.font = {color: {rgb: "000000"}};
+                            if (R === 0) {
+                                ws[cellAddr].s.fill = {patternType: "solid", fgColor: {rgb: "FFFF00"}};
+                                ws[cellAddr].s.font.bold = true;
+                            } else if (R === 1) {
+                                ws[cellAddr].s.fill = {patternType: "solid", fgColor: {rgb: "FFFF00"}};
+                                ws[cellAddr].s.font.bold = true;
+                            }
+                        }
                     }
 
                     XLSX.utils.book_append_sheet(wb, ws, name);
@@ -835,18 +873,43 @@
                     ws['!cols'] = [{wch: 30}, {wch: 5}, {wch: 20}, {wch: 20}];
                     ws['!rows'] = new Array(aoa.length).fill({hpt: 15});
 
-                    // Style header
-                    for (let C = 0; C < aoa[0].length; ++C) {
-                        const cell = XLSX.utils.encode_cell({r:0, c:C});
-                        ws[cell].s = {font: {bold: true}, fill: {patternType: "solid", fgColor: {rgb: "ADD8E6"}}}; // Light blue
-                    }
-
-                    // Merge cells for regions
                     ws['!merges'] = [
-                        {s: {r:7, c:0}, e: {r:13, c:0}}, // GCC
-                        {s: {r:14, c:0}, e: {r:18, c:0}}, // North Africa
-                        {s: {r:19, c:0}, e: {r:22, c:0}}, // Levant
+                        {s: {r:6, c:0}, e: {r:12, c:0}}, // GCC row 7-13 0-based 6-12
+                        {s: {r:13, c:0}, e: {r:17, c:0}}, // North Africa 14-18
+                        {s: {r:18, c:0}, e: {r:21, c:0}}, // Levant 19-22
                     ];
+
+                    for (let R = 0; R < aoa.length; ++R) {
+                        for (let C = 0; C < aoa[R].length; ++C) {
+                            const cellAddr = XLSX.utils.encode_cell({r: R, c: C});
+                            if (!ws[cellAddr]) continue;
+                            if (!ws[cellAddr].s) ws[cellAddr].s = {};
+                            ws[cellAddr].s.border = {
+                                top: {style: "thin", color: {rgb: "000000"}},
+                                bottom: {style: "thin", color: {rgb: "000000"}},
+                                left: {style: "thin", color: {rgb: "000000"}},
+                                right: {style: "thin", color: {rgb: "000000"}}
+                            };
+                            ws[cellAddr].s.alignment = {vertical: "center", wrapText: true};
+                            ws[cellAddr].s.font = {color: {rgb: "000000"}};
+                            if (R === 0) {
+                                ws[cellAddr].s.fill = {patternType: "solid", fgColor: {rgb: "ADD8E6"}};
+                                ws[cellAddr].s.font.bold = true;
+                            }
+                            if (R >= 6 && R <= 12) {
+                                ws[cellAddr].s.fill = {patternType: "solid", fgColor: {rgb: "90EE90"}}; // light green for GCC
+                                if (C === 0) ws[cellAddr].s.font.bold = true;
+                            } else if (R >= 13 && R <= 17) {
+                                ws[cellAddr].s.fill = {patternType: "solid", fgColor: {rgb: "ADD8E6"}}; // light blue for North Africa
+                                if (C === 0) ws[cellAddr].s.font.bold = true;
+                            } else if (R >= 18 && R <= 21) {
+                                ws[cellAddr].s.fill = {patternType: "solid", fgColor: {rgb: "DDA0DD"}}; // light purple for Levant
+                                if (C === 0) ws[cellAddr].s.font.bold = true;
+                            } else if (R === 22 || R === 23) {
+                                if (C === 0) ws[cellAddr].s.font.bold = true;
+                            }
+                        }
+                    }
 
                     XLSX.utils.book_append_sheet(wb, ws, name);
                 };
