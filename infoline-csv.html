@@ -18,6 +18,12 @@
             text-align: center;
             color: #007bff;
         }
+        h2 {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: -10px;
+        }
         form {
             background: white;
             padding: 20px;
@@ -81,8 +87,9 @@
     </style>
 </head>
 <body>
-    <button type="button" onclick="location.reload()">Clean Record</button>
     <h1>Infoline CSV Converter</h1>
+    <h2>v1.1</h2>
+    <button type="button" onclick="location.reload()">Clean Record</button>
     <form id="converterForm">
         <label for="advertiser">Advertiser:</label>
         <input type="text" id="advertiser" required>
@@ -687,6 +694,8 @@
                         ws[nameCell].z = '0';
                         if (data.campaignName.length > 50) {
                             ws[nameCell].s.font.color = {rgb: "FF0000"};
+                        } else {
+                            ws[nameCell].s.font.color = {rgb: "000000"};
                         }
 
                         const contentCell = 'C15';
@@ -694,6 +703,8 @@
                         ws[contentCell].z = '0';
                         if (data.content.length > 100) {
                             ws[contentCell].s.font.color = {rgb: "FF0000"};
+                        } else {
+                            ws[contentCell].s.font.color = {rgb: "000000"};
                         }
 
                         const buttonCell = 'C16';
@@ -701,6 +712,8 @@
                         ws[buttonCell].z = '0';
                         if (data.cta.length > 12) {
                             ws[buttonCell].s.font.color = {rgb: "FF0000"};
+                        } else {
+                            ws[buttonCell].s.font.color = {rgb: "000000"};
                         }
 
                         const generatorCell = 'D11';
@@ -790,7 +803,7 @@
                 addBulkSheet(bulk_aoa, "NEW! Infoline Bulk upload templ");
                 addCountrySheet(country_aoa, "country id");
 
-                XLSX.writeFile(wb, `${data.backendName}.xlsx`);
+                XLSX.writeFile(wb, `${data.backendName}.xlsx`, {bookSST: true});
             } catch (e) {
                 alert('Errors:\n- ' + e.message);
             }
