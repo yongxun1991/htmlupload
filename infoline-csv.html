@@ -5,18 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infoline CSV Converter</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        label { display: block; margin-top: 10px; }
-        input, select, textarea { width: 100%; padding: 5px; margin-top: 5px; }
-        button { margin-top: 20px; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        #output { margin-top: 20px; white-space: pre-wrap; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], input[type="url"], select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .date-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .date-group select {
+            flex: 1 1 80px;
+            min-width: 80px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            margin-top: 5px;
+        }
+        .checkbox-group label {
+            font-weight: normal;
+            margin-top: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <h1>Infoline CSV Converter</h1>
-    <p>Enter the campaign details below. Assumptions: Series ID is required (added field as it's essential for CSV). Cover image URI is left blank. Batch IDs are generated per rules, with running numbers differentiated for same product IDs across multiple cuepoints or countries. Unix timestamps are in UTC. Country is single per row; multiples create separate entries. Question: The batch ID format example includes '/' between regions, but since countries are single per row, I've used single country code per batch ID—clarify if multi-country batch IDs are needed. Timezone offsets are simplified to hours from UTC; select appropriately.</p>
-
     <form id="converterForm">
         <label for="advertiser">Advertiser:</label>
         <input type="text" id="advertiser" required>
@@ -27,48 +91,127 @@
         <label for="region">Region (e.g., MENA for backend name):</label>
         <input type="text" id="region" required>
 
-        <label>Series ID:</label>
+        <label for="seriesId">Series ID:</label>
         <input type="text" id="seriesId" required>
 
         <label>Campaign Start Date & Time:</label>
-        <select id="startYear">
-            <option value="2024">2024</option>
-            <option value="2025" selected>2025</option>
-            <option value="2026">2026</option>
-            <option value="2027">2027</option>
-            <option value="2028">2028</option>
-            <option value="2029">2029</option>
-            <option value="2030">2030</option>
-        </select>
-        <select id="startMonth">
-            <option value="1">01</option><option value="2">02</option><option value="3">03</option><option value="4">04</option><option value="5">05</option><option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
-        </select>
-        <select id="startDay">
-            <option value="1">01</option><option value="2">02</option><!-- ... up to 31 -->
-            <option value="31">31</option>
-        </select>
-        <select id="startHour"><option value="0">00</option><!-- ... up to 23 --></select>
-        <select id="startMin"><option value="0">00</option><!-- ... up to 59 --></select>
-        <select id="startSec"><option value="0">00</option><!-- ... up to 59 --></select>
-        <select id="startTimezone">
-            <option value="0">UTC+0</option>
-            <option value="1">UTC+1</option>
-            <option value="2">UTC+2</option>
-            <option value="3">UTC+3</option>
-            <option value="4">UTC+4</option>
-            <option value="5">UTC+5</option>
-            <option value="6">UTC+6</option>
-            <option value="7">UTC+7</option>
-            <option value="8">UTC+8</option>
-            <option value="9">UTC+9</option>
-            <option value="10">UTC+10</option>
-            <option value="11">UTC+11</option>
-            <option value="12">UTC+12</option>
-            <!-- Add negative if needed, e.g. <option value="-5">UTC-5</option> -->
-        </select>
+        <div class="date-group">
+            <select id="startYear">
+                <!-- Years from 2024 to 2030 -->
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+            </select>
+            <select id="startMonth">
+                <option value="1">01 - January</option>
+                <option value="2">02 - February</option>
+                <option value="3">03 - March</option>
+                <option value="4">04 - April</option>
+                <option value="5">05 - May</option>
+                <option value="6">06 - June</option>
+                <option value="7">07 - July</option>
+                <option value="8">08 - August</option>
+                <option value="9">09 - September</option>
+                <option value="10">10 - October</option>
+                <option value="11">11 - November</option>
+                <option value="12">12 - December</option>
+            </select>
+            <select id="startDay"></select> <!-- Populated in JS -->
+            <select id="startHour"></select> <!-- Populated in JS -->
+            <select id="startMin"></select> <!-- Populated in JS -->
+            <select id="startSec"></select> <!-- Populated in JS -->
+            <select id="startTimezone">
+                <option value="-12">UTC-12</option>
+                <option value="-11">UTC-11</option>
+                <option value="-10">UTC-10</option>
+                <option value="-9">UTC-9</option>
+                <option value="-8">UTC-8</option>
+                <option value="-7">UTC-7</option>
+                <option value="-6">UTC-6</option>
+                <option value="-5">UTC-5</option>
+                <option value="-4">UTC-4</option>
+                <option value="-3">UTC-3</option>
+                <option value="-2">UTC-2</option>
+                <option value="-1">UTC-1</option>
+                <option value="0">UTC+0</option>
+                <option value="1">UTC+1</option>
+                <option value="2">UTC+2</option>
+                <option value="3">UTC+3</option>
+                <option value="4">UTC+4</option>
+                <option value="5">UTC+5</option>
+                <option value="6">UTC+6</option>
+                <option value="7">UTC+7</option>
+                <option value="8">UTC+8</option>
+                <option value="9">UTC+9</option>
+                <option value="10">UTC+10</option>
+                <option value="11">UTC+11</option>
+                <option value="12">UTC+12</option>
+            </select>
+        </div>
 
         <label>Campaign End Date & Time:</label>
-        <!-- Similar selects for endYear, endMonth, etc. -->
+        <div class="date-group">
+            <select id="endYear">
+                <!-- Same as startYear -->
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+            </select>
+            <select id="endMonth">
+                <option value="1">01 - January</option>
+                <option value="2">02 - February</option>
+                <option value="3">03 - March</option>
+                <option value="4">04 - April</option>
+                <option value="5">05 - May</option>
+                <option value="6">06 - June</option>
+                <option value="7">07 - July</option>
+                <option value="8">08 - August</option>
+                <option value="9">09 - September</option>
+                <option value="10">10 - October</option>
+                <option value="11">11 - November</option>
+                <option value="12">12 - December</option>
+            </select>
+            <select id="endDay"></select> <!-- Populated in JS -->
+            <select id="endHour"></select> <!-- Populated in JS -->
+            <select id="endMin"></select> <!-- Populated in JS -->
+            <select id="endSec"></select> <!-- Populated in JS -->
+            <select id="endTimezone">
+                <!-- Same as startTimezone -->
+                <option value="-12">UTC-12</option>
+                <option value="-11">UTC-11</option>
+                <option value="-10">UTC-10</option>
+                <option value="-9">UTC-9</option>
+                <option value="-8">UTC-8</option>
+                <option value="-7">UTC-7</option>
+                <option value="-6">UTC-6</option>
+                <option value="-5">UTC-5</option>
+                <option value="-4">UTC-4</option>
+                <option value="-3">UTC-3</option>
+                <option value="-2">UTC-2</option>
+                <option value="-1">UTC-1</option>
+                <option value="0">UTC+0</option>
+                <option value="1">UTC+1</option>
+                <option value="2">UTC+2</option>
+                <option value="3">UTC+3</option>
+                <option value="4">UTC+4</option>
+                <option value="5">UTC+5</option>
+                <option value="6">UTC+6</option>
+                <option value="7">UTC+7</option>
+                <option value="8">UTC+8</option>
+                <option value="9">UTC+9</option>
+                <option value="10">UTC+10</option>
+                <option value="11">UTC+11</option>
+                <option value="12">UTC+12</option>
+            </select>
+        </div>
 
         <label for="cuepoints">Cuepoints (comma-separated, in seconds, e.g., 300,600,900):</label>
         <input type="text" id="cuepoints" required>
@@ -88,47 +231,47 @@
         <label for="productIds">Selected Product IDs (comma-separated, e.g., 2671541,2671769):</label>
         <input type="text" id="productIds" required>
 
-        <label for="countries">Country Selection (Multiple):</label>
-        <select id="countries" multiple required>
-            <option value="1819730|HK">Hong Kong (HK)</option>
-            <option value="1880251|SG">Singapore (SG)</option>
-            <option value="1605651|TH">Thailand (TH)</option>
-            <option value="1694008|PH">Philippines (PH)</option>
-            <option value="1643084|ID">Indonesia (ID)</option>
-            <option value="1733045|MY">Malaysia (MY)</option>
-            <option value="286963|OM">Oman (OM)</option>
-            <option value="285570|KW">Kuwait (KW)</option>
-            <option value="290291|BH">Bahrain (BH)</option>
-            <option value="102358|SA">Saudi Arabia (SA)</option>
-            <option value="289688|QA">Qatar (QA)</option>
-            <option value="69543|YE">Yemen (YE)</option>
-            <option value="290557|AE">United Arab Emirates (AE)</option>
-            <option value="357994|EG">Egypt (EG)</option>
-            <option value="2542007|MA">Morocco (MA)</option>
-            <option value="366755|SD">Sudan (SD)</option>
-            <option value="2464461|TN">Tunisia (TN)</option>
-            <option value="2589581|DZ">Algeria (DZ)</option>
-            <option value="99237|IQ">Iraq (IQ)</option>
-            <option value="272103|LB">Lebanon (LB)</option>
-            <option value="6254930|PS">Palestine (PS)</option>
-            <option value="248816|JO">Jordan (JO)</option>
-            <option value="1327865|MM">Myanmar (MM)</option>
-            <option value="953987|ZA">South Africa (ZA)</option>
-        </select>
+        <label>Country Selection (Multiple):</label>
+        <div class="checkbox-group" id="countriesGroup">
+            <label><input type="checkbox" name="countries" value="1819730|hk"> Hong Kong (HK)</label>
+            <label><input type="checkbox" name="countries" value="1880251|sg"> Singapore (SG)</label>
+            <label><input type="checkbox" name="countries" value="1605651|th"> Thailand (TH)</label>
+            <label><input type="checkbox" name="countries" value="1694008|ph"> Philippines (PH)</label>
+            <label><input type="checkbox" name="countries" value="1643084|id"> Indonesia (ID)</label>
+            <label><input type="checkbox" name="countries" value="1733045|my"> Malaysia (MY)</label>
+            <label><input type="checkbox" name="countries" value="286963|om"> Oman (OM)</label>
+            <label><input type="checkbox" name="countries" value="285570|kw"> Kuwait (KW)</label>
+            <label><input type="checkbox" name="countries" value="290291|bh"> Bahrain (BH)</label>
+            <label><input type="checkbox" name="countries" value="102358|sa"> Saudi Arabia (SA)</label>
+            <label><input type="checkbox" name="countries" value="289688|qa"> Qatar (QA)</label>
+            <label><input type="checkbox" name="countries" value="69543|ye"> Yemen (YE)</label>
+            <label><input type="checkbox" name="countries" value="290557|ae"> United Arab Emirates (AE)</label>
+            <label><input type="checkbox" name="countries" value="357994|eg"> Egypt (EG)</label>
+            <label><input type="checkbox" name="countries" value="2542007|ma"> Morocco (MA)</label>
+            <label><input type="checkbox" name="countries" value="366755|sd"> Sudan (SD)</label>
+            <label><input type="checkbox" name="countries" value="2464461|tn"> Tunisia (TN)</label>
+            <label><input type="checkbox" name="countries" value="2589581|dz"> Algeria (DZ)</label>
+            <label><input type="checkbox" name="countries" value="99237|iq"> Iraq (IQ)</label>
+            <label><input type="checkbox" name="countries" value="272103|lb"> Lebanon (LB)</label>
+            <label><input type="checkbox" name="countries" value="6254930|ps"> Palestine (PS)</label>
+            <label><input type="checkbox" name="countries" value="248816|jo"> Jordan (JO)</label>
+            <label><input type="checkbox" name="countries" value="1327865|mm"> Myanmar (MM)</label>
+            <label><input type="checkbox" name="countries" value="953987|za"> South Africa (ZA)</label>
+        </div>
 
-        <label for="userTypes">User Type (Multiple):</label>
-        <select id="userTypes" multiple required>
-            <option value="anonymous">Anonymous</option>
-            <option value="free">Free</option>
-            <option value="premium">Premium</option>
-        </select>
+        <label>User Type (Multiple):</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="userTypes" value="anonymous"> Anonymous</label>
+            <label><input type="checkbox" name="userTypes" value="free"> Free</label>
+            <label><input type="checkbox" name="userTypes" value="premium"> Premium</label>
+        </div>
 
-        <label for="platforms">Platform (Multiple):</label>
-        <select id="platforms" multiple required>
-            <option value="web">web</option>
-            <option value="pad">pad</option>
-            <option value="phone">phone</option>
-        </select>
+        <label>Platform (Multiple):</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="platforms" value="web"> Web</label>
+            <label><input type="checkbox" name="platforms" value="pad"> Pad</label>
+            <label><input type="checkbox" name="platforms" value="phone"> Phone</label>
+        </div>
 
         <label for="duration">Duration (in seconds, max 30):</label>
         <input type="number" id="duration" min="1" max="30" required>
@@ -141,10 +284,38 @@
     <script>
         function pad2(num) { return num.toString().padStart(2, '0'); }
 
+        function populateSelects() {
+            // Days 1-31
+            let daysHtml = '';
+            for (let i = 1; i <= 31; i++) {
+                daysHtml += `<option value="${i}">${pad2(i)} - Day</option>`;
+            }
+            document.getElementById('startDay').innerHTML = daysHtml;
+            document.getElementById('endDay').innerHTML = daysHtml;
+
+            // Hours 0-23
+            let hoursHtml = '';
+            for (let i = 0; i <= 23; i++) {
+                hoursHtml += `<option value="${i}">${pad2(i)} - Hour</option>`;
+            }
+            document.getElementById('startHour').innerHTML = hoursHtml;
+            document.getElementById('endHour').innerHTML = hoursHtml;
+
+            // Minutes and Seconds 0-59
+            let minsHtml = '';
+            for (let i = 0; i <= 59; i++) {
+                minsHtml += `<option value="${i}">${pad2(i)} - Minute/Second</option>`;
+            }
+            document.getElementById('startMin').innerHTML = minsHtml;
+            document.getElementById('endMin').innerHTML = minsHtml;
+            document.getElementById('startSec').innerHTML = minsHtml;
+            document.getElementById('endSec').innerHTML = minsHtml;
+        }
+
         function getUnixTimestamp(year, month, day, hour, min, sec, offset) {
-            // offset in hours
-            let localHour = parseInt(hour) - parseInt(offset); // Adjust to UTC
-            return Date.UTC(year, month - 1, day, localHour, min, sec) / 1000;
+            let date = new Date(Date.UTC(year, month - 1, day, hour, min, sec));
+            date.setUTCHours(date.getUTCHours() - parseInt(offset)); // Adjust for timezone to get UTC timestamp
+            return Math.floor(date.getTime() / 1000);
         }
 
         function csvEscape(field) {
@@ -156,114 +327,153 @@
         }
 
         function generateCSV() {
-            // Get values
-            const campaignName = document.getElementById('campaignName').value.replace(/\s/g, ''); // Remove spaces as per example
-            const region = document.getElementById('region').value;
-            const seriesId = document.getElementById('seriesId').value;
-            const startYear = document.getElementById('startYear').value;
-            const startMonth = document.getElementById('startMonth').value;
-            const startDay = document.getElementById('startDay').value;
-            const startHour = document.getElementById('startHour').value;
-            const startMin = document.getElementById('startMin').value;
-            const startSec = document.getElementById('startSec').value;
-            const startTimezone = document.getElementById('startTimezone').value;
-            // Similar for end...
-            // For brevity, assume end vars defined similarly: endYear, etc.
-            const yymm = startYear.slice(-2) + pad2(startMonth);
-            const backendName = `Infoline_${region}_${campaignName}_${yymm}`;
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-            const cta = document.getElementById('cta').value;
-            const landing = document.getElementById('landing').value;
-            const duration = document.getElementById('duration').value;
-            const productStr = document.getElementById('productIds').value;
-            const cueStr = document.getElementById('cuepoints').value;
-            const products = productStr.split(',').map(p => p.trim()).filter(p => p);
-            const cues = cueStr.split(',').map(c => c.trim()).filter(c => c);
-            const selectedCountries = Array.from(document.getElementById('countries').selectedOptions).map(opt => {
-                const [id, code] = opt.value.split('|');
-                return {id, code};
-            });
-            const selectedUserTypes = Array.from(document.getElementById('userTypes').selectedOptions).map(opt => opt.value);
-            const anon = selectedUserTypes.includes('anonymous') ? 1 : 0;
-            const free = selectedUserTypes.includes('free') ? 1 : 0;
-            const prem = selectedUserTypes.includes('premium') ? 1 : 0;
-            const selectedPlatforms = Array.from(document.getElementById('platforms').selectedOptions).map(opt => opt.value);
-            const startUnix = getUnixTimestamp(startYear, startMonth, startDay, startHour, startMin, startSec, startTimezone);
-            const endUnix = getUnixTimestamp(endYear, endMonth, endDay, endHour, endMin, endSec, endTimezone); // Assume end vars
+            try {
+                // Get values
+                const campaignName = document.getElementById('campaignName').value.replace(/\s/g, '');
+                const region = document.getElementById('region').value;
+                const seriesId = document.getElementById('seriesId').value;
+                const startYear = parseInt(document.getElementById('startYear').value);
+                const startMonth = parseInt(document.getElementById('startMonth').value);
+                const startDay = parseInt(document.getElementById('startDay').value);
+                const startHour = parseInt(document.getElementById('startHour').value);
+                const startMin = parseInt(document.getElementById('startMin').value);
+                const startSec = parseInt(document.getElementById('startSec').value);
+                const startTimezone = document.getElementById('startTimezone').value;
+                const endYear = parseInt(document.getElementById('endYear').value);
+                const endMonth = parseInt(document.getElementById('endMonth').value);
+                const endDay = parseInt(document.getElementById('endDay').value);
+                const endHour = parseInt(document.getElementById('endHour').value);
+                const endMin = parseInt(document.getElementById('endMin').value);
+                const endSec = parseInt(document.getElementById('endSec').value);
+                const endTimezone = document.getElementById('endTimezone').value;
+                const yymm = startYear.toString().slice(-2) + pad2(startMonth);
+                const backendName = `Infoline_${region}_${campaignName}_${yymm}`;
+                const title = document.getElementById('title').value;
+                const content = document.getElementById('content').value;
+                const cta = document.getElementById('cta').value;
+                const landing = document.getElementById('landing').value;
+                const duration = document.getElementById('duration').value;
+                const productStr = document.getElementById('productIds').value;
+                const cueStr = document.getElementById('cuepoints').value;
 
-            // Generate combinations
-            let combinations = [];
-            products.forEach(product => {
-                cues.forEach(cue => {
-                    selectedCountries.forEach(country => {
-                        combinations.push({product, cue, country_id: country.id, country_code: country.code});
+                // Validate required fields
+                if (!campaignName || !region || !seriesId || !productStr || !cueStr || !title || !cta || !landing || !duration) {
+                    throw new Error('Missing required fields');
+                }
+
+                const products = productStr.split(',').map(p => p.trim()).filter(p => p);
+                const cues = cueStr.split(',').map(c => c.trim()).filter(c => c);
+
+                if (products.length === 0 || cues.length === 0) {
+                    throw new Error('No valid product IDs or cuepoints provided');
+                }
+
+                // Get checked countries
+                const countryChecks = document.querySelectorAll('input[name="countries"]:checked');
+                const selectedCountries = Array.from(countryChecks).map(check => {
+                    const [id, code] = check.value.split('|');
+                    return {id, code};
+                });
+
+                if (selectedCountries.length === 0) {
+                    throw new Error('At least one country must be selected');
+                }
+
+                // User types
+                const userChecks = document.querySelectorAll('input[name="userTypes"]:checked');
+                const selectedUserTypes = Array.from(userChecks).map(check => check.value);
+                const anon = selectedUserTypes.includes('anonymous') ? 1 : 0;
+                const free = selectedUserTypes.includes('free') ? 1 : 0;
+                const prem = selectedUserTypes.includes('premium') ? 1 : 0;
+
+                // Platforms
+                const platformChecks = document.querySelectorAll('input[name="platforms"]:checked');
+                const selectedPlatforms = Array.from(platformChecks).map(check => check.value);
+
+                if (selectedPlatforms.length === 0) {
+                    throw new Error('At least one platform must be selected');
+                }
+
+                const startUnix = getUnixTimestamp(startYear, startMonth, startDay, startHour, startMin, startSec, startTimezone);
+                const endUnix = getUnixTimestamp(endYear, endMonth, endDay, endHour, endMin, endSec, endTimezone);
+
+                if (startUnix >= endUnix) {
+                    throw new Error('Start time must be before end time');
+                }
+
+                // Generate combinations: product x cue x country
+                let combinations = [];
+                products.forEach(product => {
+                    cues.forEach(cue => {
+                        selectedCountries.forEach(country => {
+                            combinations.push({product, cue, country_id: country.id, country_code: country.code.toLowerCase()});
+                        });
                     });
                 });
-            });
 
-            // Group by product
-            let groups = {};
-            combinations.forEach(combo => {
-                if (!groups[combo.product]) groups[combo.product] = [];
-                groups[combo.product].push(combo);
-            });
+                // Group by product for running numbers
+                let groups = {};
+                combinations.forEach(combo => {
+                    if (!groups[combo.product]) groups[combo.product] = [];
+                    groups[combo.product].push(combo);
+                });
 
-            // Assign running numbers
-            for (let product in groups) {
-                const group = groups[product];
-                if (group.length > 1) {
+                Object.keys(groups).forEach(product => {
+                    const group = groups[product];
                     group.forEach((combo, index) => {
                         combo.running_number = pad2(index + 1);
                     });
-                } else {
-                    group.forEach(combo => {
-                        combo.running_number = '01';
-                    });
-                }
+                });
+
+                // Generate CSV rows
+                const headers = ['series_id','product_id','batch_id','name','backend_name','cover_image_uri','start_time','time_duration','popup_content','ad_tag','ad_link','ad_auto_show_anonymous_user','ad_auto_show_free_user','ad_auto_show_premium_user','ad_schedule_start_time','ad_schedule_end_time','platform','country_ids'];
+                let csvRows = [headers.join(',')];
+
+                combinations.forEach(combo => {
+                    const batchId = `${combo.country_code}${yymm}${combo.running_number}`;
+                    const row = [
+                        seriesId,
+                        combo.product,
+                        batchId,
+                        title,
+                        backendName,
+                        '', // cover
+                        combo.cue,
+                        duration,
+                        content,
+                        cta,
+                        landing,
+                        anon,
+                        free,
+                        prem,
+                        startUnix,
+                        endUnix,
+                        JSON.stringify(selectedPlatforms),
+                        JSON.stringify([combo.country_id])
+                    ].map(csvEscape);
+                    csvRows.push(row.join(','));
+                });
+
+                const csvContent = csvRows.join('\n');
+
+                // Download CSV
+                const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${backendName}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                let errorMsg = 'Errors:\n- ' + e.message;
+                // Add more specific errors if needed
+                alert(errorMsg);
             }
-
-            // Generate rows
-            const headers = ['series_id','product_id','batch_id','name','backend_name','cover_image_uri','start_time','time_duration','popup_content','ad_tag','ad_link','ad_auto_show_anonymous_user','ad_auto_show_free_user','ad_auto_show_premium_user','ad_schedule_start_time','ad_schedule_end_time','platform','country_ids'];
-            let csvRows = [headers.join(',')];
-
-            combinations.forEach(combo => {
-                const batchId = `${combo.country_code.toLowerCase()}${yymm}${combo.running_number}`;
-                const row = [
-                    seriesId,
-                    combo.product,
-                    batchId,
-                    title,
-                    backendName,
-                    '', // cover
-                    combo.cue,
-                    duration,
-                    content,
-                    cta,
-                    landing,
-                    anon,
-                    free,
-                    prem,
-                    startUnix,
-                    endUnix,
-                    JSON.stringify(selectedPlatforms),
-                    JSON.stringify([combo.country_id])
-                ].map(csvEscape);
-                csvRows.push(row.join(','));
-            });
-
-            const csvContent = csvRows.join('\n');
-            document.getElementById('output').textContent = csvContent;
-
-            // Download
-            const blob = new Blob([csvContent], {type: 'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Infoline_${region}_${campaignName}_${yymm}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
         }
+
+        populateSelects();
     </script>
 </body>
 </html>
