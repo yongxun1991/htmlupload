@@ -5,15 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNIX Timestamp Converter</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .section { margin-bottom: 30px; }
-        .input-group { display: flex; flex-wrap: wrap; gap: 10px; }
-        .input-field { flex: 1; min-width: 100px; }
-        .input-field input, .input-field select { width: 100%; padding: 8px; box-sizing: border-box; }
-        .error { color: red; font-size: 0.9em; display: none; }
-        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        #result { margin-top: 20px; font-weight: bold; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        .input-field label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .input-field input, .input-field select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .input-field input:focus, .input-field select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #timestamp-result, #datetime-result {
+            margin-top: 30px;
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            color: #28a745;
+            word-break: break-all;
+        }
+        #datetime-result {
+            font-size: 2em;
+        }
+        #datetime-result div {
+            font-size: 1.2em;
+            margin-top: 10px;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
@@ -23,7 +99,7 @@
         <h2>Convert Date/Time to UNIX Timestamp</h2>
         <div class="input-group">
             <div class="input-field">
-                <label for="year">Year (e.g., 1970-9999):</label>
+                <label for="year">Year (1970-9999):</label>
                 <input type="number" id="year" min="1970" max="9999" required>
                 <div class="error" id="year-error">Invalid year (1970-9999).</div>
             </div>
@@ -53,7 +129,7 @@
                 <div class="error" id="second-error">Invalid second (0-59).</div>
             </div>
             <div class="input-field">
-                <label for="timezone">Timezone (UTC offset, e.g., +00:00):</label>
+                <label for="timezone">Timezone (UTC offset):</label>
                 <select id="timezone" required>
                     <option value="-12:00">-12:00</option>
                     <option value="-11:00">-11:00</option>
@@ -84,20 +160,51 @@
                 <div class="error" id="timezone-error">Invalid timezone.</div>
             </div>
         </div>
-        <button onclick="convertToTimestamp()">Convert to Timestamp</button>
+        <button onclick="convertToTimestamp()">Convert</button>
         <div id="timestamp-result"></div>
     </div>
-    
+
     <div class="section">
-        <h2>Convert UNIX Timestamp to Date/Time</h2>
+        <h2>Convert UNIX Timestamp to Date/Time (in UTC)</h2>
         <div class="input-group">
-            <div class="input-field" style="flex: 3;">
+            <div class="input-field">
                 <label for="timestamp">UNIX Timestamp (seconds):</label>
                 <input type="number" id="timestamp" min="0" required>
                 <div class="error" id="timestamp-error">Invalid timestamp (non-negative integer).</div>
             </div>
+            <div class="input-field">
+                <label for="output-timezone">Output Timezone (UTC offset):</label>
+                <select id="output-timezone" required>
+                    <option value="-12:00">-12:00</option>
+                    <option value="-11:00">-11:00</option>
+                    <option value="-10:00">-10:00</option>
+                    <option value="-09:00">-09:00</option>
+                    <option value="-08:00">-08:00</option>
+                    <option value="-07:00">-07:00</option>
+                    <option value="-06:00">-06:00</option>
+                    <option value="-05:00">-05:00</option>
+                    <option value="-04:00">-04:00</option>
+                    <option value="-03:00">-03:00</option>
+                    <option value="-02:00">-02:00</option>
+                    <option value="-01:00">-01:00</option>
+                    <option value="+00:00" selected>+00:00 (UTC)</option>
+                    <option value="+01:00">+01:00</option>
+                    <option value="+02:00">+02:00</option>
+                    <option value="+03:00">+03:00</option>
+                    <option value="+04:00">+04:00</option>
+                    <option value="+05:00">+05:00</option>
+                    <option value="+06:00">+06:00</option>
+                    <option value="+07:00">+07:00</option>
+                    <option value="+08:00">+08:00</option>
+                    <option value="+09:00">+09:00</option>
+                    <option value="+10:00">+10:00</option>
+                    <option value="+11:00">+11:00</option>
+                    <option value="+12:00">+12:00</option>
+                </select>
+                <div class="error" id="output-timezone-error">Invalid timezone.</div>
+            </div>
         </div>
-        <button onclick="convertFromTimestamp()">Convert to Date/Time</button>
+        <button onclick="convertFromTimestamp()">Convert</button>
         <div id="datetime-result"></div>
     </div>
 
@@ -125,11 +232,6 @@
             return day >= 1 && day <= maxDay;
         }
 
-        function parseTimezoneOffset(tz) {
-            const [sign, hours, minutes] = tz.match(/([+-])(\d{2}):(\d{2})/).slice(1);
-            return (sign === '+' ? 1 : -1) * (parseInt(hours) * 60 + parseInt(minutes)) * 60 * 1000;
-        }
-
         function convertToTimestamp() {
             const year = parseInt(document.getElementById('year').value);
             const month = parseInt(document.getElementById('month').value);
@@ -140,35 +242,80 @@
             const timezone = document.getElementById('timezone').value;
 
             let valid = true;
-            valid &= validateInput('year', v => v >= 1970 && v <= 9999, 'Invalid year (1970-9999).');
-            valid &= validateInput('month', v => v >= 1 && v <= 12, 'Invalid month (1-12).');
-            valid &= validateInput('day', v => validateDate(year, month, v), 'Invalid day for this month/year.');
-            valid &= validateInput('hour', v => v >= 0 && v <= 23, 'Invalid hour (0-23).');
-            valid &= validateInput('minute', v => v >= 0 && v <= 59, 'Invalid minute (0-59).');
-            valid &= validateInput('second', v => v >= 0 && v <= 59, 'Invalid second (0-59).');
+            valid &= validateInput('year', v => !isNaN(v) && v >= 1970 && v <= 9999, 'Invalid year (1970-9999).');
+            valid &= validateInput('month', v => !isNaN(v) && v >= 1 && v <= 12, 'Invalid month (1-12).');
+            valid &= validateInput('day', v => !isNaN(v) && validateDate(year, month, v), 'Invalid day for this month/year.');
+            valid &= validateInput('hour', v => !isNaN(v) && v >= 0 && v <= 23, 'Invalid hour (0-23).');
+            valid &= validateInput('minute', v => !isNaN(v) && v >= 0 && v <= 59, 'Invalid minute (0-59).');
+            valid &= validateInput('second', v => !isNaN(v) && v >= 0 && v <= 59, 'Invalid second (0-59).');
             valid &= validateInput('timezone', v => /^([+-]\d{2}:\d{2})$/.test(v), 'Invalid timezone.');
 
             if (!valid) return;
 
-            // Create date in local timezone, then adjust to UTC by subtracting offset
-            const localDate = new Date(year, month - 1, day, hour, minute, second);
-            const offsetMs = parseTimezoneOffset(timezone);
-            const utcMs = localDate.getTime() - offsetMs; // Adjust to UTC
-            const timestamp = Math.floor(utcMs / 1000);
+            const monthStr = String(month).padStart(2, '0');
+            const dayStr = String(day).padStart(2, '0');
+            const hourStr = String(hour).padStart(2, '0');
+            const minuteStr = String(minute).padStart(2, '0');
+            const secondStr = String(second).padStart(2, '0');
+
+            const dateStr = `${year}-${monthStr}-${dayStr}T${hourStr}:${minuteStr}:${secondStr}${timezone}`;
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) {
+                alert('Invalid date format. Please check your inputs.');
+                return;
+            }
+            const timestamp = Math.floor(date.getTime() / 1000);
 
             document.getElementById('timestamp-result').innerHTML = `UNIX Timestamp: ${timestamp}`;
         }
 
-        function convertFromTimestamp() {
-            const timestamp = parseInt(document.getElementById('timestamp').value);
+        function getIanaTimeZone(tz) {
+            if (tz === '+00:00' || tz === '-00:00') return 'UTC';
+            const sign = tz[0];
+            const hours = parseInt(tz.slice(1, 3));
+            const ianaSign = sign === '+' ? '-' : '+';
+            return `Etc/GMT${ianaSign}${hours}`;
+        }
 
-            const valid = validateInput('timestamp', v => Number.isInteger(parseFloat(v)) && v >= 0, 'Invalid timestamp (non-negative integer).');
+        function convertFromTimestamp() {
+            const timestamp = parseFloat(document.getElementById('timestamp').value);
+            const timezone = document.getElementById('output-timezone').value;
+
+            let valid = true;
+            valid &= validateInput('timestamp', v => !isNaN(v) && Number.isInteger(parseFloat(v)) && v >= 0, 'Invalid timestamp (non-negative integer).');
+            valid &= validateInput('output-timezone', v => /^([+-]\d{2}:\d{2})$/.test(v), 'Invalid timezone.');
+
             if (!valid) return;
 
             const date = new Date(timestamp * 1000);
-            const formatted = date.toUTCString() + ` (UTC)`;
+            const iana = getIanaTimeZone(timezone);
 
-            document.getElementById('datetime-result').innerHTML = `Date/Time: ${formatted}<br>Breakdown:<br>Year: ${date.getUTCFullYear()}<br>Month: ${date.getUTCMonth() + 1}<br>Day: ${date.getUTCDate()}<br>Hour: ${date.getUTCHours()}<br>Minute: ${date.getUTCMinutes()}<br>Second: ${date.getUTCSeconds()}`;
+            const options = {
+                timeZone: iana,
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                hour12: false,
+            };
+
+            const formatter = new Intl.DateTimeFormat('en', options);
+            const parts = formatter.formatToParts(date);
+
+            const year = parts.find(p => p.type === 'year').value;
+            const month = parts.find(p => p.type === 'month').value;
+            const day = parts.find(p => p.type === 'day').value;
+            const hour = parts.find(p => p.type === 'hour').value;
+            const minute = parts.find(p => p.type === 'minute').value;
+            const second = parts.find(p => p.type === 'second').value;
+
+            const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')} ${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:${second.padStart(2, '0')} ${timezone}`;
+
+            let resultHtml = `Date/Time: ${formattedDate}<div>Breakdown:</div><div>Year: ${year}</div><div>Month: ${month}</div><div>Day: ${day}</div><div>Hour: ${hour}</div><div>Minute: ${minute}</div><div>Second: ${second}</div><div>Timezone: ${timezone}</div>`;
+
+            document.getElementById('datetime-result').innerHTML = resultHtml;
         }
     </script>
 </body>
