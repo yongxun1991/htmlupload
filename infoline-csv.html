@@ -334,7 +334,7 @@
 
         function formatDate(year, month, day) {
             const date = new Date(year, month - 1, day);
-            return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
         }
 
         function csvEscape(field) {
@@ -786,24 +786,76 @@
 
                 const wb = XLSX.utils.book_new();
 
-                // Add sheets with basic styling (SheetJS has limited styling, but we can set some)
+                // Add sheets with improved styling
                 const addSheet = (aoa, name) => {
                     const ws = XLSX.utils.aoa_to_sheet(aoa);
-                    // Add some basic header bold
+                    ws['!cols'] = [{wch: 30}, {wch: 30}, {wch: 25}, {wch: 50}, {wch: 20}]; // Approximate column widths
+                    ws['!rows'] = new Array(aoa.length).fill({hpt: 15}); // Row heights
+
+                    // Style header row
+                    for (let R = 0; R < aoa.length; ++R) {
+                        for (let C = 0; C < aoa[R].length; ++C) {
+                            const cell = XLSX.utils.encode_cell({r: R, c: C});
+                            if (!ws[cell]) continue;
+                            if (!ws[cell].s) ws[cell].s = {};
+                            if (R === 2) { // Preparation row
+                                ws[cell].s.fill = {patternType: "solid", fgColor: {rgb: "F4B084"}}; // Orange-yellow
+                                ws[cell].s.font = {bold: true};
+                                ws[cell].s.alignment = {vertical: "center", wrapText: true};
+                            } else if (R === 0 || R === 1) {
+                                ws[cell].s.font = {italic: true};
+                            } else {
+                                if (C === 0) {
+                                    ws[cell].s.font = {bold: true};
+                                }
+                            }
+                        }
+                    }
+
+                    XLSX.utils.book_append_sheet(wb, ws, name);
+                };
+
+                const addBulkSheet = (aoa, name) => {
+                    const ws = XLSX.utils.aoa_to_sheet(aoa);
+                    ws['!cols'] = [{wch: 15}, {wch: 15}, {wch: 15}, {wch: 25}, {wch: 30}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 20}, {wch: 20}, {wch: 25}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 15}];
+                    ws['!rows'] = new Array(aoa.length).fill({hpt: 15});
+
+                    // Style headers
+                    for (let C = 0; C < aoa[1].length; ++C) {
+                        const cell = XLSX.utils.encode_cell({r:1, c:C});
+                        if (!ws[cell]) continue;
+                        ws[cell].s = {font: {bold: true}, fill: {patternType: "solid", fgColor: {rgb: "FFFF00"}}}; // Yellow
+                    }
+
+                    XLSX.utils.book_append_sheet(wb, ws, name);
+                };
+
+                const addCountrySheet = (aoa, name) => {
+                    const ws = XLSX.utils.aoa_to_sheet(aoa);
+                    ws['!cols'] = [{wch: 30}, {wch: 5}, {wch: 20}, {wch: 20}];
+                    ws['!rows'] = new Array(aoa.length).fill({hpt: 15});
+
+                    // Style header
                     for (let C = 0; C < aoa[0].length; ++C) {
                         const cell = XLSX.utils.encode_cell({r:0, c:C});
-                        if (!ws[cell]) ws[cell] = {};
-                        if (!ws[cell].s) ws[cell].s = {};
-                        ws[cell].s.font = {bold: true};
+                        ws[cell].s = {font: {bold: true}, fill: {patternType: "solid", fgColor: {rgb: "ADD8E6"}}}; // Light blue
                     }
+
+                    // Merge cells for regions
+                    ws['!merges'] = [
+                        {s: {r:7, c:0}, e: {r:13, c:0}}, // GCC
+                        {s: {r:14, c:0}, e: {r:18, c:0}}, // North Africa
+                        {s: {r:19, c:0}, e: {r:22, c:0}}, // Levant
+                    ];
+
                     XLSX.utils.book_append_sheet(wb, ws, name);
                 };
 
                 addSheet(dep_spec_aoa, "(deprecated) Infoline Spec Form");
                 addSheet(spec_aoa, "Infoline Spec Form");
-                addSheet(dep_bulk_aoa, "(dep)Infoline Bulk upload templ");
-                addSheet(bulk_aoa, "NEW! Infoline Bulk upload templ");
-                addSheet(country_aoa, "country id");
+                addBulkSheet(dep_bulk_aoa, "(dep)Infoline Bulk upload templ");
+                addBulkSheet(bulk_aoa, "NEW! Infoline Bulk upload templ");
+                addCountrySheet(country_aoa, "country id");
 
                 XLSX.writeFile(wb, `${data.backendName}.xlsx`);
             } catch (e) {
