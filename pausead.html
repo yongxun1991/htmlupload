@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT 广告单元测试 - Pause Ad</title>
+
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    
+    <script>
+        window.googletag = window.googletag || {cmd: []};
+        
+        googletag.cmd.push(function() {
+            // 定义广告位
+            // 参数1: 广告单元路径
+            // 参数2: 支持的尺寸列表
+            // 参数3: 网页中对应的 Div ID
+            var adSlot = googletag.defineSlot('/94348418/ott_uni_web_pause_ad_half', [[320, 50], [320, 100]], 'div-gpt-ad-pause-test')
+                .addService(googletag.pubads());
+
+            // 根据你提供的 URL 还原 Key-Value 设定 (Targeting)
+            adSlot.setTargeting('ott_lang', 'en')
+                  .setTargeting('ott_user_type', '0')
+                  .setTargeting('ott_privileges', 'SHOW_ADS')
+                  .setTargeting('ott_series_id', '98765')
+                  .setTargeting('ott_product_id', '2946729')
+                  .setTargeting('ott_cpname', 'kmk');
+
+            // 启用单请求模式 (SRA) 和服务
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; background-color: #f4f4f4; }
+        .ad-container { border: 1px dashed #ccc; background-color: white; padding: 10px; margin-top: 20px; }
+        .label { font-size: 12px; color: #666; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <h2>GPT Ad Unit Test</h2>
+    <p>正在呼叫单元: <code>/94348418/ott_uni_web_pause_ad_half</code></p>
+
+    <div class="ad-container">
+        <div class="label">AD SLOT (320x50 or 320x100)</div>
+        <div id="div-gpt-ad-pause-test">
+            <script>
+                googletag.cmd.push(function() {
+                    googletag.display('div-gpt-ad-pause-test');
+                });
+            </script>
+        </div>
+    </div>
+
+    <div style="margin-top: 50px; font-size: 12px; color: #999;">
+        提示：如果广告没有显示，请检查广告单元是否已在 Google Ad Manager 中投放到该路径，或检查 AdBlock 是否已关闭。
+    </div>
+
+</body>
+</html>
